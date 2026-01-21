@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% block title %}Contact Us - RealEstate Pro{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-light py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold text-dark mb-3">Contact Us</h1>
+        <p class="lead text-muted mb-4">Get in touch with our expert team. We're here to help with all your real estate needs.</p>
+        <div class="d-flex align-items-center mb-3">
+          <i class="fas fa-clock text-primary me-3" style="font-size: 2rem;"></i>
+          <div>
+            <h6 class="mb-0 fw-bold">Response Time</h6>
+            <small class="text-muted">We typically respond within 2 hours</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <img src="/static/img/contact.svg" alt="Contact Us" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Form and Info -->
+<section class="py-5">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-8">
+        <div class="card shadow-lg border-0">
+          <div class="card-header bg-primary text-white py-4">
+            <h3 class="mb-0 fw-bold">Send us a Message</h3>
+          </div>
+          <div class="card-body p-4">
+            <form>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">First Name</label>
+                  <input type="text" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Last Name</label>
+                  <input type="text" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Email</label>
+                  <input type="email" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Phone</label>
+                  <input type="tel" class="form-control">
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold">Subject</label>
+                  <select class="form-select" required>
+                    <option value="">Choose a subject</option>
+                    <option>Property Inquiry</option>
+                    <option>Price Estimation</option>
+                    <option>Technical Support</option>
+                    <option>Partnership</option>
+                    <option>General Question</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold">Message</label>
+                  <textarea class="form-control" rows="5" required></textarea>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary btn-lg px-5">
+                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="contact-info">
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-4">
+                <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                Visit Our Office
+              </h5>
+              <p class="text-muted mb-0">
+                RealEstate Pro Headquarters<br>
+                Levent Mahallesi<br>
+                Istanbul, Turkey 34330
+              </p>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-4">
+                <i class="fas fa-phone text-success me-2"></i>
+                Call Us
+              </h5>
+              <p class="text-muted mb-2">
+                <strong>Sales:</strong> +90 555 123 4567<br>
+                <strong>Support:</strong> +90 555 123 4568
+              </p>
+              <small class="text-muted">Mon-Fri 9AM-6PM</small>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-4">
+                <i class="fas fa-envelope text-warning me-2"></i>
+                Email Us
+              </h5>
+              <p class="text-muted mb-0">
+                <strong>General:</strong> info@realestatepro.com<br>
+                <strong>Support:</strong> support@realestatepro.com<br>
+                <strong>Sales:</strong> sales@realestatepro.com
+              </p>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-4">
+                <i class="fas fa-clock text-info me-2"></i>
+                Business Hours
+              </h5>
+              <div class="text-muted">
+                <div class="d-flex justify-content-between mb-1">
+                  <span>Monday - Friday</span>
+                  <span>9:00 AM - 6:00 PM</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                  <span>Saturday</span>
+                  <span>10:00 AM - 4:00 PM</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span>Sunday</span>
+                  <span>Closed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-12">
+        <h2 class="fw-bold text-dark mb-3">Frequently Asked Questions</h2>
+        <p class="text-muted lead">Quick answers to common questions</p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="accordion" id="faqAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                How accurate is the AI price estimator?
+              </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Our AI estimator has a 95% accuracy rate based on current market data. However, final property values can be influenced by many factors including market conditions and property condition.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                Are the property listings verified?
+              </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Yes, all property listings on our platform undergo a thorough verification process to ensure accuracy and authenticity of the information provided.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                Is there a fee for using the price estimator?
+              </button>
+            </h2>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                No, our basic price estimation tool is completely free to use. We also offer premium services for more detailed analysis and professional consultations.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                How often is the property data updated?
+              </button>
+            </h2>
+            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Our property database is updated daily with new listings and market data. The AI algorithms are continuously trained on the latest market information.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
