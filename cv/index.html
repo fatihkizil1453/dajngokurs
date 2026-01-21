@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatih Kızıl - CV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(0, 123, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        header {
+            background: linear-gradient(135deg, rgba(0, 20, 40, 0.8) 0%, rgba(0, 40, 80, 0.8) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 3em;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        header p {
+            margin: 10px 0 0;
+            font-size: 1.5em;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 900px;
+            margin: -40px auto 40px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+        h2 {
+            color: #00d4ff;
+            margin-top: 0;
+            font-size: 2em;
+            border-bottom: none;
+            position: relative;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #8a2be2);
+            border-radius: 2px;
+        }
+        .about p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #f0f0f0;
+        }
+        .contact p {
+            margin: 10px 0;
+            font-size: 1.1em;
+            color: #f0f0f0;
+        }
+        .skills ul, .certificates ul, .languages ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0;
+            list-style: none;
+        }
+        .skills li, .certificates li, .languages li {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(138, 43, 226, 0.2));
+            color: #e0e0e0;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .skills li:hover, .certificates li:hover, .languages li:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 212, 255, 0.3);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #c0c0c0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+        }
+            margin-top: 40px;
+        }
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5em;
+            }
+            header p {
+                font-size: 1.2em;
+            }
+            .container {
+                margin: -20px auto 20px;
+                padding: 10px;
+            }
+            .section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Fatih Kızıl</h1>
+        <p>Bilgisayar Öğrencisi</p>
+    </header>
+    <div class="container">
+        <section class="section about">
+            <h2>Hakkımda</h2>
+            <p>Karşıyaka Zek Şaroğlu Meslek ve Teknik Anadolu Lisesi'nde 11. sınıfım. Bilişim bölümü okuyorum. Bilgisayar öğrencisiyim.</p>
+        </section>
+        <section class="section contact">
+            <h2>İletişim</h2>
+            <p>📞 Telefon: +90 0551 659 5425</p>
+            <p>✉️ Email: fathkzl2535@gmail.com</p>
+            <p>🏠 Adres: 1620/20 Sokak No 29 Daire 3</p>
+        </section>
+        <section class="section skills">
+            <h2>Beceriler</h2>
+            <ul>
+                <li>🐍 Python</li>
+                <li>🔷 C#</li>
+                <li>🗄️ MySQL</li>
+                <li>🌐 HTML</li>
+                <li>🎨 CSS</li>
+                <li>☕ Java</li>
+            </ul>
+        </section>
+        <section class="section certificates">
+            <h2>Sertifikalar</h2>
+            <ul>
+                <li>🌐 Ağ Temelleri 2023</li>
+                <li>💻 Yazılım Yapabilme Teknik Bilgisayar</li>
+                <li>🗃️ Ağ ve Veritabanı 2024</li>
+            </ul>
+        </section>
+        <section class="section languages">
+            <h2>Diller</h2>
+            <ul>
+                <li>🇹🇷 Türkçe: C2</li>
+                <li>🇺🇸 İngilizce: B1-B2</li>
+            </ul>
+        </section>
+    </div>
+    <footer>
+        <p>&copy; 2025 Fatih Kızıl. Tüm hakları saklıdır.</p>
+    </footer>
+</body>
+</html>
