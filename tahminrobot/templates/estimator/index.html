@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <div class="estimator-hero mb-3">
+          <div class="d-flex align-items-center flex-column gap-2 justify-content-center text-center">
+            <!-- decorative robot graphic above the heading -->
+            <img src="/static/img/robot.svg" alt="robot" width="86" height="86" class="hero-robot mb-1" />
+            <h1 class="h2 mb-1 text-primary fw-bold">Ev Fiyat Tahmin Robotu</h1>
+          </div>
+        </div>
+
+        <form method="post" novalidate id="estimate-form">
+          {% csrf_token %}
+          <div class="row gy-3">
+            <div class="col-md-6">
+                <label class="form-label">Metrekare (m²)</label>
+              {{ form.square_meters }}
+              {% if form.square_meters.errors %}
+                <div class="text-danger small mt-1">{{ form.square_meters.errors|striptags }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Oda sayısı</label>
+              {{ form.rooms }}
+              {% if form.rooms.errors %}
+                <div class="text-danger small mt-1">{{ form.rooms.errors|striptags }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Bulunduğu kat</label>
+              {{ form.floor }}
+              {% if form.floor.errors %}
+                <div class="text-danger small mt-1">{{ form.floor.errors|striptags }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Bina yaşı (yıl)</label>
+              {{ form.age }}
+              {% if form.age.errors %}
+                <div class="text-danger small mt-1">{{ form.age.errors|striptags }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Konum puanı (1-10) <small id="loc-value" class="text-muted ms-2">(5)</small></label>
+              <div class="d-flex align-items-center gap-3">
+                <div class="flex-grow-1">{{ form.location_rating }}</div>
+                <div class="text-center" style="width:64px;">
+                  <span class="badge bg-light text-primary border py-2" id="loc-readout">5</span>
+                </div>
+              </div>
+              {% if form.location_rating.errors %}
+                <div class="text-danger small mt-1">{{ form.location_rating.errors|striptags }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Ulaşım durumu</label>
+              {{ form.transport }}
+              {% if form.transport.errors %}
+                <div class="text-danger small mt-1">{{ form.transport.errors|striptags }}</div>
+              {% endif %}
+            {% if form.non_field_errors %}
+              <div class="col-12">
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+              </div>
+            {% endif %}
+
+              <!-- center button specifically under the location+transport columns -->
+                <div class="col-12 d-flex justify-content-center mt-3">
+  <button type="submit" class="btn btn-gradient btn-lg px-4 py-2" style="max-width:320px" aria-label="Hesapla">
+    Ortalama Hesapla
+  </button>
+</div>
+
+
+          </div>
+        </form>
+
+        <div class="mt-4">
+          <div id="estimate-result" class="result-box result-hidden"></div>
+        </div>
+
+        {% if result %}
+          <script>
+            // populate the result box if server-rendered response is provided
+            window.addEventListener('DOMContentLoaded', function () {
+              const box = document.getElementById('estimate-result');
+              if (!box) return;
+                      let html = '';
+                      {% if formatted_base %}
+                        html += `<div class="small text-muted">Taban fiyat</div><div class="fw-semibold">{{ formatted_base }}</div>`;
+                      {% endif %}
+                      {% if formatted_enhanced %}
+                        html += `<div class="small text-muted mt-2">Konum/ulaşım dahil</div><div class="fw-semibold">{{ formatted_enhanced }}</div>`;
+                      {% endif %}
+                      html += `<div class="fs-3 fw-bold text-primary mt-3">{{ formatted_result }}</div>`;
+                      box.innerHTML = html;
+              box.classList.remove('result-hidden');
+              setTimeout(() => {
+                box.classList.add('result-visible');
+                if (typeof window.__estimatorBurst === 'function') {
+                  window.__estimatorBurst(box);
+                }
+              }, 60);
+            });
+          </script>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
