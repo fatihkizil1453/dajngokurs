@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% block title %}Smart Price Estimator - RealEstate Pro{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-gradient-primary text-white py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <div class="d-flex align-items-center mb-3">
+          <i class="fas fa-brain text-warning me-3" style="font-size: 2.5rem;"></i>
+          <div>
+            <h1 class="display-5 fw-bold mb-1">Smart Price Estimator</h1>
+            <p class="lead mb-0">AI-Powered Property Valuation Tool</p>
+          </div>
+        </div>
+        <p class="mb-4">Get instant, accurate property price estimates using our advanced machine learning algorithms. Trusted by thousands of buyers, sellers, and real estate professionals.</p>
+        <div class="d-flex align-items-center">
+          <span class="badge bg-warning text-dark fs-6 px-3 py-2 me-3">
+            <i class="fas fa-star me-1"></i>95% Accuracy Rate
+          </span>
+          <span class="badge bg-light text-dark fs-6 px-3 py-2">
+            <i class="fas fa-clock me-1"></i>Instant Results
+          </span>
+        </div>
+      </div>
+      <div class="col-lg-4 text-center">
+        <img src="/static/img/ai-estimator.svg" alt="AI Estimator" class="img-fluid" style="max-height: 300px;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Estimator Form -->
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-lg border-0">
+          <div class="card-header bg-primary text-white text-center py-4">
+            <h3 class="mb-0 fw-bold">Property Details</h3>
+            <p class="mb-0 opacity-75">Enter your property specifications below</p>
+          </div>
+          <div class="card-body p-4">
+            <form method="post" novalidate id="estimate-form">
+              {% csrf_token %}
+
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <label class="form-label fw-semibold">Square Meters (m²)</label>
+                    {{ form.square_meters }}
+                    {% if form.square_meters.errors %}
+                      <div class="text-danger small mt-1">{{ form.square_meters.errors|striptags }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <label class="form-label fw-semibold">Number of Rooms</label>
+                    {{ form.rooms }}
+                    {% if form.rooms.errors %}
+                      <div class="text-danger small mt-1">{{ form.rooms.errors|striptags }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <label class="form-label fw-semibold">Floor Number</label>
+                    {{ form.floor }}
+                    {% if form.floor.errors %}
+                      <div class="text-danger small mt-1">{{ form.floor.errors|striptags }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <label class="form-label fw-semibold">Building Age (years)</label>
+                    {{ form.age }}
+                    {% if form.age.errors %}
+                      <div class="text-danger small mt-1">{{ form.age.errors|striptags }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Location Rating (1-10)
+                    <small id="loc-value" class="text-muted ms-2">(5)</small>
+                  </label>
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="flex-grow-1">{{ form.location_rating }}</div>
+                    <div class="text-center" style="width:64px;">
+                      <span class="badge bg-primary text-white border py-2" id="loc-readout">5</span>
+                    </div>
+                  </div>
+                  {% if form.location_rating.errors %}
+                    <div class="text-danger small mt-1">{{ form.location_rating.errors|striptags }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <label class="form-label fw-semibold">Transportation Access</label>
+                    {{ form.transport }}
+                    {% if form.transport.errors %}
+                      <div class="text-danger small mt-1">{{ form.transport.errors|striptags }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                {% if form.non_field_errors %}
+                  <div class="col-12">
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                  </div>
+                {% endif %}
+
+                <div class="col-12 text-center mt-4">
+                  <button type="submit" class="btn btn-gradient btn-lg px-5 py-3" style="min-width: 250px;">
+                    <i class="fas fa-calculator me-2"></i>Calculate Estimate
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Results Section -->
+            <div class="mt-5">
+              <div id="estimate-result" class="result-box result-hidden"></div>
+            </div>
+
+            {% if result %}
+              <script>
+                // populate the result box if server-rendered response is provided
+                window.addEventListener('DOMContentLoaded', function () {
+                  const box = document.getElementById('estimate-result');
+                  if (!box) return;
+                          let html = '';
+                          {% if formatted_base %}
+                            html += `<div class="small text-muted">Base Estimate</div><div class="fw-semibold">{{ formatted_base }}</div>`;
+                          {% endif %}
+                          {% if formatted_enhanced %}
+                            html += `<div class="small text-muted mt-2">Location Enhanced</div><div class="fw-semibold">{{ formatted_enhanced }}</div>`;
+                          {% endif %}
+                          html += `<div class="fs-2 fw-bold text-primary mt-3">{{ formatted_result }}</div>`;
+                          html += `<div class="text-muted small mt-2"><i class="fas fa-info-circle me-1"></i>Estimate based on current market data</div>`;
+                          box.innerHTML = html;
+                  box.classList.remove('result-hidden');
+                  setTimeout(() => {
+                    box.classList.add('result-visible');
+                    if (typeof window.__estimatorBurst === 'function') {
+                      window.__estimatorBurst(box);
+                    }
+                  }, 60);
+                });
+              </script>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="row mt-5 g-4">
+          <div class="col-12">
+            <h4 class="fw-bold text-center mb-4">How Our AI Estimator Works</h4>
+          </div>
+          <div class="col-md-4 text-center">
+            <div class="step-icon mb-3">
+              <i class="fas fa-database text-primary" style="font-size: 2rem;"></i>
+            </div>
+            <h6 class="fw-bold">Data Analysis</h6>
+            <p class="text-muted small">Analyzes thousands of recent property transactions</p>
+          </div>
+          <div class="col-md-4 text-center">
+            <div class="step-icon mb-3">
+              <i class="fas fa-brain text-success" style="font-size: 2rem;"></i>
+            </div>
+            <h6 class="fw-bold">AI Processing</h6>
+            <p class="text-muted small">Machine learning algorithms process your property details</p>
+          </div>
+          <div class="col-md-4 text-center">
+            <div class="step-icon mb-3">
+              <i class="fas fa-chart-line text-warning" style="font-size: 2rem;"></i>
+            </div>
+            <h6 class="fw-bold">Market Prediction</h6>
+            <p class="text-muted small">Provides accurate market value estimation</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

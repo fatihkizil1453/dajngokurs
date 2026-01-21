@@ -1,0 +1,24 @@
+{% extends 'game/base.html' %}
+
+{% block content %}
+<div class="menu-card">
+    <h1 class="game-title">ADAM ASMACA</h1>
+    <p class="subtitle">Bir kategori seç ve oyuna başla!</p>
+
+    <form action="{% url 'start_game' %}" method="post" class="category-form">
+        {% csrf_token %}
+        <div class="category-grid">
+            {% for cat in categories %}
+            <label class="category-item">
+                <input type="radio" name="category" value="{{ cat }}" {% if forloop.first %}checked{% endif %}>
+                <span class="category-name">{{ cat }}</span>
+            </label>
+            {% empty %}
+            <p>Kelime bulunamadı. Lütfen önce veri tabanını doldurun.</p>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="primary-button">OYUNU BAŞLAT</button>
+    </form>
+</div>
+{% endblock %}

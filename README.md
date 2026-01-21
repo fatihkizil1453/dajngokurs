@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Multi-Vendor E-Commerce Platform
 
 ## Architecture
@@ -26,3 +27,6 @@ See [API_DEMO_SCENARIOS.md](API_DEMO_SCENARIOS.md) for step-by-step usage.
 
 ## Testing
 Run `python manage.py test apps.accounts apps.products apps.orders apps.disputes`
+=======
+# kurs
+>>>>>>> 25c5ae7f75d0b6801ae5c3a635c64c91b462a50b
