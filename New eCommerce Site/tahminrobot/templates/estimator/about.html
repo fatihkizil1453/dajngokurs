@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% block title %}About Us - RealEstate Pro{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-light py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold text-dark mb-3">About RealEstate Pro</h1>
+        <p class="lead text-muted mb-4">Revolutionizing real estate with technology and innovation since 2020.</p>
+        <p class="mb-4">We combine cutting-edge AI technology with deep market expertise to provide accurate property valuations and comprehensive real estate solutions.</p>
+        <div class="d-flex gap-3">
+          <div class="text-center">
+            <div class="h3 fw-bold text-primary">{{ stats.properties }}</div>
+            <small class="text-muted">Properties Listed</small>
+          </div>
+          <div class="text-center">
+            <div class="h3 fw-bold text-success">{{ stats.cities }}</div>
+            <small class="text-muted">Cities Covered</small>
+          </div>
+          <div class="text-center">
+            <div class="h3 fw-bold text-warning">{{ stats.accuracy }}</div>
+            <small class="text-muted">Accuracy Rate</small>
+          </div>
+          <div class="text-center">
+            <div class="h3 fw-bold text-info">{{ stats.users }}</div>
+            <small class="text-muted">Happy Users</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <img src="/static/img/about-team.svg" alt="Our Team" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mission Section -->
+<section class="py-5">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-6">
+        <h2 class="fw-bold text-dark mb-4">Our Mission</h2>
+        <p class="text-muted mb-4">To democratize access to accurate property information and make real estate transactions transparent, efficient, and trustworthy for everyone.</p>
+        <ul class="list-unstyled">
+          <li class="mb-3">
+            <i class="fas fa-check-circle text-success me-3"></i>
+            <strong>Accuracy:</strong> Industry-leading AI algorithms for precise valuations
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-check-circle text-success me-3"></i>
+            <strong>Transparency:</strong> Clear pricing and no hidden fees
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-check-circle text-success me-3"></i>
+            <strong>Innovation:</strong> Constantly evolving with market trends
+          </li>
+          <li class="mb-3">
+            <i class="fas fa-check-circle text-success me-3"></i>
+            <strong>Trust:</strong> Verified listings and secure platform
+          </li>
+        </ul>
+      </div>
+      <div class="col-lg-6">
+        <h2 class="fw-bold text-dark mb-4">Why Choose Us?</h2>
+        <div class="accordion" id="whyChooseUs">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                <i class="fas fa-brain me-2 text-primary"></i>Advanced AI Technology
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#whyChooseUs">
+              <div class="accordion-body">
+                Our proprietary AI algorithms analyze millions of data points to provide the most accurate property valuations in the market.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                <i class="fas fa-shield-alt me-2 text-success"></i>Verified Listings
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#whyChooseUs">
+              <div class="accordion-body">
+                Every property listing undergoes rigorous verification to ensure accuracy and authenticity.
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                <i class="fas fa-users me-2 text-warning"></i>Expert Support
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#whyChooseUs">
+              <div class="accordion-body">
+                Our team of real estate experts is available to guide you through every step of your property journey.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-12">
+        <h2 class="fw-bold text-dark mb-3">Meet Our Team</h2>
+        <p class="text-muted lead">Experienced professionals dedicated to your real estate success</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm text-center">
+          <div class="card-body">
+            <div class="avatar mb-3 mx-auto">
+              <i class="fas fa-user-circle text-primary" style="font-size: 4rem;"></i>
+            </div>
+            <h5 class="card-title fw-bold">Ahmet Yılmaz</h5>
+            <p class="text-muted small mb-2">CEO & Founder</p>
+            <p class="card-text text-muted small">15+ years in real estate technology</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm text-center">
+          <div class="card-body">
+            <div class="avatar mb-3 mx-auto">
+              <i class="fas fa-user-circle text-success" style="font-size: 4rem;"></i>
+            </div>
+            <h5 class="card-title fw-bold">Ayşe Kaya</h5>
+            <p class="text-muted small mb-2">Head of AI</p>
+            <p class="card-text text-muted small">PhD in Machine Learning</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm text-center">
+          <div class="card-body">
+            <div class="avatar mb-3 mx-auto">
+              <i class="fas fa-user-circle text-warning" style="font-size: 4rem;"></i>
+            </div>
+            <h5 class="card-title fw-bold">Mehmet Demir</h5>
+            <p class="text-muted small mb-2">Real Estate Director</p>
+            <p class="card-text text-muted small">Certified Real Estate Expert</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm text-center">
+          <div class="card-body">
+            <div class="avatar mb-3 mx-auto">
+              <i class="fas fa-user-circle text-info" style="font-size: 4rem;"></i>
+            </div>
+            <h5 class="card-title fw-bold">Zeynep Şahin</h5>
+            <p class="text-muted small mb-2">Customer Success</p>
+            <p class="card-text text-muted small">Real Estate Consultant</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="bg-primary text-white py-5">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-3">Ready to Get Started?</h2>
+    <p class="lead mb-4">Join thousands of satisfied users who trust RealEstate Pro for their property needs.</p>
+    <div class="d-flex justify-content-center gap-3">
+      <a href="{% url 'estimator:listings' %}" class="btn btn-light btn-lg px-4">
+        <i class="fas fa-search me-2"></i>Browse Properties
+      </a>
+      <a href="{% url 'estimator:estimator' %}" class="btn btn-outline-light btn-lg px-4">
+        <i class="fas fa-calculator me-2"></i>Try Estimator
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
