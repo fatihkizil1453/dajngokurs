@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kampanyalar - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="flex items-center gap-4">
+                <a href="../buyer/index.html" class="logo">MarketPlus</a>
+                <span class="badge badge-pending">Satıcı Paneli</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-semibold">TechWorld Inc.</span>
+                <div
+                    style="width: 32px; height: 32px; background: var(--secondary); border-radius: 50%; color: white; display: flex; items-center; justify-content: center; font-size: 0.75rem;">
+                    TW</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container flex" style="align-items: flex-start;">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 flex-shrink-0">
+            <nav class="flex flex-col gap-1">
+                <a href="seller-dashboard.html" class="sidebar-link">Panel</a>
+                <a href="seller-products.html" class="sidebar-link">Ürünler</a>
+                <a href="seller-orders.html" class="sidebar-link">Siparişler <span
+                        class="badge badge-danger ml-auto">3</span></a>
+                <a href="seller-campaigns.html" class="sidebar-link active">Kampanyalar</a>
+                <a href="seller-messages.html" class="sidebar-link">Mesajlar</a>
+                <a href="#" class="sidebar-link">Analitik</a>
+                <a href="#" class="sidebar-link">Ayarlar</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="font-bold text-2xl">Pazarlama Kampanyaları</h1>
+                <button class="btn btn-primary">+ Kupon Oluştur</button>
+            </div>
+
+            <div class="bg-white rounded shadow-sm border p-4 mb-4">
+                <h3 class="font-bold mb-4">Aktif Kuponlar</h3>
+
+                <div class="grid-cols-4" style="grid-template-columns: repeat(3, 1fr);">
+                    <!-- Coupon Card -->
+                    <div class="border rounded p-4 border-l-4" style="border-left-color: var(--primary);">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="font-mono bg-gray-100 p-1 rounded font-bold text-primary">YAZ20</div>
+                            <span class="badge badge-success">Aktif</span>
+                        </div>
+                        <div class="text-xs text-muted mb-2">Tüm Mağazada %20 İndirim</div>
+                        <div class="text-xs text-muted mb-4">Bitiş: 31 Ağu 2026</div>
+                        <div class="w-full bg-gray-200 h-1 rounded overflow-hidden">
+                            <div class="bg-primary h-full" style="width: 45%;"></div>
+                        </div>
+                        <div class="text-xs text-right mt-1">45/100 Kullanıldı</div>
+                    </div>
+
+                    <!-- Coupon Card -->
+                    <div class="border rounded p-4 border-l-4" style="border-left-color: var(--primary);">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="font-mono bg-gray-100 p-1 rounded font-bold text-primary">HOSGELDIN10</div>
+                            <span class="badge badge-success">Aktif</span>
+                        </div>
+                        <div class="text-xs text-muted mb-2">1,500 TL üzeri 300 TL İndirim</div>
+                        <div class="text-xs text-muted mb-4">Bitiş: Süresiz</div>
+                        <div class="w-full bg-gray-200 h-1 rounded overflow-hidden">
+                            <div class="bg-primary h-full" style="width: 12%;"></div>
+                        </div>
+                        <div class="text-xs text-right mt-1">12 Kullanıldı</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded shadow-sm border p-4">
+                <h3 class="font-bold mb-4">Performans</h3>
+                <div class="grid-cols-4">
+                    <div class="text-center p-2">
+                        <div class="text-2xl font-bold">120</div>
+                        <div class="text-xs text-muted">Toplam Kullanım</div>
+                    </div>
+                    <div class="text-center p-2 border-l">
+                        <div class="text-2xl font-bold">72,000 TL</div>
+                        <div class="text-xs text-muted">Oluşan Satış</div>
+                    </div>
+                    <div class="text-center p-2 border-l">
+                        <div class="text-2xl font-bold">10,200 TL</div>
+                        <div class="text-xs text-muted">Verilen İndirim</div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</body>
+
+</html>

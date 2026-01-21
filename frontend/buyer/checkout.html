@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ödeme - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .saved-item {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .saved-item:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .saved-item.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .saved-item.selected::before {
+            content: '✓';
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">MarketPlus</a>
+            <div class="nav-actions"></div>
+        </div>
+    </nav>
+
+    <main class="container mt-4 mb-4" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+
+        <!-- Steps -->
+        <div class="flex flex-col gap-4">
+
+            <!-- Step 1: Address -->
+            <div class="bg-white rounded shadow-sm border p-6">
+                <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
+                    <span
+                        class="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">1</span>
+                    Teslimat Adresi
+                </h2>
+
+                <!-- Saved Addresses -->
+                <div id="savedAddresses" class="mb-4"></div>
+
+                <!-- New Address Toggle -->
+                <button id="toggleNewAddress" class="btn btn-secondary btn-sm mb-4" onclick="toggleNewAddressForm()">
+                    + Yeni Adres Kullan
+                </button>
+
+                <!-- New Address Form -->
+                <div id="newAddressForm" class="bg-gray-50 p-4 rounded border" style="display:none;">
+                    <div class="grid-cols-2">
+                        <div class="form-group">
+                            <label>Ad</label>
+                            <input type="text" id="checkout_first_name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Soyad</label>
+                            <input type="text" id="checkout_last_name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Telefon</label>
+                            <input type="text" id="checkout_phone" class="form-control" value="0532 000 00 00" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Şehir</label>
+                            <input type="text" id="checkout_city" class="form-control" value="İstanbul" required>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Adres</label>
+                            <textarea id="checkout_address" class="form-control" rows="2" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Posta Kodu</label>
+                            <input type="text" id="checkout_zip" class="form-control" value="34000" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Payment -->
+            <div class="bg-white rounded shadow-sm border p-6">
+                <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
+                    <span
+                        class="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">2</span>
+                    Ödeme Yöntemi
+                </h2>
+
+                <!-- Saved Cards -->
+                <div id="savedCards" class="mb-4"></div>
+
+                <!-- New Card Toggle -->
+                <button id="toggleNewCard" class="btn btn-secondary btn-sm mb-4" onclick="toggleNewCardForm()">
+                    + Yeni Kart Kullan
+                </button>
+
+                <!-- New Card Form -->
+                <div id="newCardForm" class="bg-gray-50 p-4 rounded border" style="display:none;">
+                    <div class="form-group mb-4">
+                        <label>Kart Numarası</label>
+                        <input type="text" id="card_number" class="form-control" placeholder="0000 0000 0000 0000">
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="form-group flex-1">
+                            <label>Son Kullanma Tarihi</label>
+                            <input type="text" id="card_expiry" class="form-control" placeholder="AA/YY">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label>CVC</label>
+                            <input type="text" id="card_cvc" class="form-control" placeholder="123">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Summary -->
+        <div class="bg-white rounded shadow-sm border p-4 h-fit sticky top-4">
+            <h2 class="font-bold text-lg mb-4">Sipariş Özeti</h2>
+
+            <div id="checkoutItems" class="mb-4 border-b pb-4"></div>
+
+            <div class="flex justify-between mb-2">
+                <span class="text-muted">Ürünler (<span id="itemCount">0</span>)</span>
+                <span id="subtotal">0.00 TL</span>
+            </div>
+            <div class="flex justify-between mb-2">
+                <span class="text-muted">Kargo</span>
+                <span class="text-success">Ücretsiz</span>
+            </div>
+            <div class="flex justify-between mb-4 border-t pt-2 font-bold text-lg">
+                <span>Toplam</span>
+                <span class="text-primary" id="totalAmount">0.00 TL</span>
+            </div>
+
+            <div class="text-xs text-muted mb-4 text-center">
+                Siparişi vererek MarketPlus <a href="#" class="underline">Kullanım Koşulları</a>'nı kabul etmiş
+                olursunuz.
+            </div>
+
+            <button id="completeOrderBtn" class="btn btn-primary btn-block mb-2">Siparişi Tamamla</button>
+            <a href="cart.html" class="btn btn-secondary btn-block">Sepete Geri Dön</a>
+        </div>
+
+    </main>
+
+    <script src="../favorites.js"></script>
+    <script src="../cart.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        let selectedAddressIndex = null;
+        let selectedCardIndex = null;
+        let useNewAddress = false;
+        let useNewCard = false;
+
+        function getAddresses() {
+            return JSON.parse(localStorage.getItem('addresses') || '[]');
+        }
+        function getCards() {
+            return JSON.parse(localStorage.getItem('cards') || '[]');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = auth.getUser();
+            if (!user) {
+                window.location.href = 'login.html?redirect=checkout.html';
+                return;
+            }
+
+            // Pre-fill new address form with user info
+            document.getElementById('checkout_first_name').value = user.first_name || '';
+            document.getElementById('checkout_last_name').value = user.last_name || '';
+
+            renderSavedAddresses();
+            renderSavedCards();
+            renderCheckoutSummary();
+
+            document.getElementById('completeOrderBtn').addEventListener('click', completeOrder);
+        });
+
+        function renderSavedAddresses() {
+            const addresses = getAddresses();
+            const container = document.getElementById('savedAddresses');
+
+            if (addresses.length === 0) {
+                container.innerHTML = '<p class="text-muted text-sm mb-2">Kayıtlı adresiniz yok.</p>';
+                document.getElementById('newAddressForm').style.display = 'block';
+                document.getElementById('toggleNewAddress').style.display = 'none';
+                useNewAddress = true;
+                return;
+            }
+
+            // Find default address
+            const defaultIndex = addresses.findIndex(a => a.isDefault);
+            selectedAddressIndex = defaultIndex >= 0 ? defaultIndex : 0;
+
+            let html = '<div class="grid gap-3">';
+            addresses.forEach((addr, index) => {
+                html += `
+                    <div class="saved-item ${index === selectedAddressIndex ? 'selected' : ''}" onclick="selectAddress(${index})">
+                        <div class="font-bold">${addr.title}</div>
+                        <div class="text-sm text-muted">${addr.name} • ${addr.phone}</div>
+                        <div class="text-sm">${addr.full || addr.address}</div>
+                        <div class="text-sm text-muted">${addr.district ? addr.district + ', ' : ''}${addr.city} ${addr.zip}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function selectAddress(index) {
+            selectedAddressIndex = index;
+            useNewAddress = false;
+            document.getElementById('newAddressForm').style.display = 'none';
+            renderSavedAddresses();
+        }
+
+        function toggleNewAddressForm() {
+            const form = document.getElementById('newAddressForm');
+            const isVisible = form.style.display === 'block';
+            form.style.display = isVisible ? 'none' : 'block';
+            useNewAddress = !isVisible;
+            if (!isVisible) {
+                selectedAddressIndex = null;
+                // Remove selection from saved addresses
+                document.querySelectorAll('#savedAddresses .saved-item').forEach(el => el.classList.remove('selected'));
+            }
+        }
+
+        function renderSavedCards() {
+            const cards = getCards();
+            const container = document.getElementById('savedCards');
+
+            if (cards.length === 0) {
+                container.innerHTML = '<p class="text-muted text-sm mb-2">Kayıtlı kartınız yok.</p>';
+                document.getElementById('newCardForm').style.display = 'block';
+                document.getElementById('toggleNewCard').style.display = 'none';
+                useNewCard = true;
+                return;
+            }
+
+            const defaultIndex = cards.findIndex(c => c.isDefault);
+            selectedCardIndex = defaultIndex >= 0 ? defaultIndex : 0;
+
+            let html = '<div class="grid gap-3">';
+            cards.forEach((card, index) => {
+                const maskedNumber = '**** **** **** ' + card.number.slice(-4);
+                html += `
+                    <div class="saved-item ${index === selectedCardIndex ? 'selected' : ''}" onclick="selectCard(${index})">
+                        <div class="font-bold">Kredi Kartı</div>
+                        <div class="text-sm">${maskedNumber}</div>
+                        <div class="text-sm text-muted">${card.name} • ${card.expiry}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function selectCard(index) {
+            selectedCardIndex = index;
+            useNewCard = false;
+            document.getElementById('newCardForm').style.display = 'none';
+            renderSavedCards();
+        }
+
+        function toggleNewCardForm() {
+            const form = document.getElementById('newCardForm');
+            const isVisible = form.style.display === 'block';
+            form.style.display = isVisible ? 'none' : 'block';
+            useNewCard = !isVisible;
+            if (!isVisible) {
+                selectedCardIndex = null;
+                document.querySelectorAll('#savedCards .saved-item').forEach(el => el.classList.remove('selected'));
+            }
+        }
+
+        function renderCheckoutSummary() {
+            const items = cart.getItems();
+            const container = document.getElementById('checkoutItems');
+
+            if (items.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center">Sepetiniz boş</p>';
+                return;
+            }
+
+            let html = '';
+            items.forEach(item => {
+                html += `
+                    <div class="flex gap-3 mb-3">
+                        <div style="width:50px;height:50px;background:#f9f9f9;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#999;">
+                            ${item.image ? `<img src="${item.image}" style="max-width:100%;max-height:100%;">` : 'Görsel'}
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-semibold text-sm">${item.name}</div>
+                            <div class="text-xs text-muted">${item.quantity} adet × ${item.price} TL</div>
+                        </div>
+                        <div class="font-bold text-sm">${(item.price * item.quantity).toLocaleString('tr-TR')} TL</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+
+            document.getElementById('itemCount').textContent = cart.getCount();
+            const total = cart.getTotal();
+            document.getElementById('subtotal').textContent = total.toLocaleString('tr-TR') + ' TL';
+            document.getElementById('totalAmount').textContent = total.toLocaleString('tr-TR') + ' TL';
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        async function completeOrder() {
+            const items = cart.getItems();
+            if (items.length === 0) {
+                alert('Sepetiniz boş!');
+                return;
+            }
+
+            // Get shipping address
+            let shippingAddress;
+            if (useNewAddress || selectedAddressIndex === null) {
+                const firstName = document.getElementById('checkout_first_name').value;
+                const lastName = document.getElementById('checkout_last_name').value;
+                if (!firstName || !lastName || !document.getElementById('checkout_address').value) {
+                    alert('Lütfen adres bilgilerini doldurun (Ad, Soyad, Adres)');
+                    return;
+                }
+                shippingAddress = {
+                    first_name: firstName,
+                    last_name: lastName,
+                    full: document.getElementById('checkout_address').value + ', ' + document.getElementById('checkout_city').value,
+                    phone: document.getElementById('checkout_phone').value,
+                    city: document.getElementById('checkout_city').value,
+                    zip: document.getElementById('checkout_zip').value
+                };
+            } else {
+                const addresses = getAddresses();
+                const addr = addresses[selectedAddressIndex];
+                shippingAddress = {
+                    first_name: addr.name.split(' ')[0],
+                    last_name: addr.name.split(' ').slice(1).join(' '),
+                    full: addr.full || addr.address,
+                    phone: addr.phone,
+                    city: addr.city,
+                    zip: addr.zip
+                };
+            }
+
+            // Validate payment details if new card
+            if (useNewCard || selectedCardIndex === null) {
+                const cardNum = document.getElementById('card_number').value;
+                if (!cardNum || cardNum.length < 16) {
+                    alert('Lütfen geçerli bir kart numarası girin');
+                    return;
+                }
+            }
+
+            const btn = document.getElementById('completeOrderBtn');
+            btn.disabled = true;
+            btn.textContent = 'İşleniyor...';
+
+            const payload = {
+                items: items.map(item => ({
+                    product_id: item.id,
+                    variant_id: item.variantId ? item.variantId : undefined,
+                    quantity: item.quantity
+                })),
+                shipping_address: shippingAddress,
+                billing_address: shippingAddress // Simplified
+            };
+
+            try {
+                const response = await fetch('/api/orders/buyer/checkout/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const order = await response.json();
+
+                    // Safely clear cart
+                    try {
+                        if (typeof cart.clear === 'function') {
+                            cart.clear();
+                        } else {
+                            localStorage.removeItem('cart');
+                            if (cart.updateNavbarCount) cart.updateNavbarCount();
+                        }
+                    } catch (e) {
+                        console.warn('Failed to clear cart:', e);
+                        localStorage.removeItem('cart');
+                    }
+
+                    window.location.href = 'orders.html?success=true&orderId=' + order.id;
+                } else {
+                    const err = await response.json();
+                    alert('Sipariş oluşturulamadı: ' + (err.error || JSON.stringify(err)));
+                    btn.disabled = false;
+                    btn.textContent = 'Siparişi Tamamla';
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+                btn.disabled = false;
+                btn.textContent = 'Siparişi Tamamla';
+            }
+        }
+    </script>
+</body>
+
+</html>

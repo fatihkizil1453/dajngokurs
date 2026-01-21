@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Yönetimi - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="flex items-center gap-4">
+                <a href="../buyer/index.html" class="logo">MarketPlus</a>
+                <span class="badge badge-pending">Satıcı Paneli</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-semibold store-name">Mağaza Adı</span>
+                <div class="store-initials"
+                    style="width: 32px; height: 32px; background: var(--secondary); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">
+                    S</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container flex" style="align-items: flex-start;">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 flex-shrink-0">
+            <nav class="flex flex-col gap-1">
+                <a href="seller-products.html" class="sidebar-link active">Ürünler</a>
+                <a href="seller-orders.html" class="sidebar-link">Siparişler <span
+                        class="badge badge-danger ml-auto">0</span></a>
+                <a href="seller-messages.html" class="sidebar-link">Mesajlar</a>
+                <a href="seller-dashboard.html" class="sidebar-link">Analitik</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="font-bold text-2xl">Ürünlerim</h1>
+                <a href="seller-add-product.html" class="btn btn-primary">+ Yeni Ürün Ekle</a>
+            </div>
+
+            <div class="bg-white rounded shadow-sm border p-4">
+                <!-- Toolbar -->
+                <div class="flex justify-between mb-4">
+                    <div class="flex gap-2">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Ürün ara..."
+                            style="width: 300px;">
+                    </div>
+                </div>
+
+                <!-- Product Table -->
+                <div class="table-container">
+                    <table id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>Görsel</th>
+                                <th>Ürün Adı</th>
+                                <th>SKU</th>
+                                <th>Fiyat</th>
+                                <th>Stok</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsList">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="text-center py-8" style="display:none;">
+                    <div class="text-muted mb-4">Henüz hiç ürün eklememişsiniz.</div>
+                    <a href="seller-add-product.html" class="btn btn-secondary">İlk Ürününü Ekle</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../productService.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = auth.getUser();
+            if (!user || user.role !== 'SELLER') {
+                window.location.href = '../buyer/index.html';
+                return;
+            }
+
+            const businessName = user.seller_profile?.business_name || (user.first_name + ' Store');
+
+            // UI Header
+            const storeNameEl = document.querySelector('.store-name');
+            const storeInitialsEl = document.querySelector('.store-initials');
+            if (storeNameEl) storeNameEl.textContent = businessName;
+            if (storeInitialsEl) storeInitialsEl.textContent = businessName.substring(0, 2).toUpperCase();
+
+            const productsList = document.getElementById('productsList');
+            const emptyState = document.getElementById('emptyState');
+
+            const API_BASE = 'http://127.0.0.1:8000/api';
+            let allProducts = [];
+
+            async function loadProducts() {
+                try {
+                    const response = await fetch(`${API_BASE}/products/?mine=true`, {
+                        headers: {
+                            'Authorization': `Bearer ${user.access}`
+                        }
+                    });
+
+                    if (!response.ok) throw new Error('Failed to fetch products');
+
+                    allProducts = await response.json();
+                    renderProducts();
+                } catch (error) {
+                    console.error('Error loading products:', error);
+                    emptyState.style.display = 'block';
+                    emptyState.innerHTML = '<div class="text-danger">Ürünler yüklenirken hata oluştu</div>';
+                }
+            }
+
+            function renderProducts() {
+                productsList.innerHTML = '';
+
+                if (allProducts.length === 0) {
+                    document.getElementById('productsTable').style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                document.getElementById('productsTable').style.display = 'table';
+                emptyState.style.display = 'none';
+
+                allProducts.forEach(p => {
+                    // Get stock from first variant
+                    const stock = p.variants && p.variants[0] ? p.variants[0].stock_quantity : 0;
+                    const price = p.price || 0;
+                    const sku = p.variants && p.variants[0] ? p.variants[0].sku : '-';
+
+                    const statusBadge = stock <= 0 ? '<span class="badge badge-danger">Stok Yok</span>' :
+                        stock < 10 ? '<span class="badge badge-warning">Stok Az</span>' :
+                            '<span class="badge badge-success">Aktif</span>';
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <div style="width: 40px; height: 40px; background: #eee; border-radius: 4px; overflow: hidden;">
+                                ${p.image ? `<img src="${p.image}" style="width:100%; height:100%; object-fit:cover;">` : ''}
+                            </div>
+                        </td>
+                        <td class="font-semibold">${p.name}</td>
+                        <td>${sku}</td>
+                        <td>${parseFloat(price).toLocaleString('tr-TR')} TL</td>
+                        <td>${stock}</td>
+                        <td>${statusBadge}</td>
+                        <td class="flex gap-2">
+                            <a href="seller-add-product.html?id=${p.id}" class="btn btn-secondary btn-sm">Düzenle</a>
+                            <button class="btn btn-secondary btn-sm text-danger" onclick="deleteProduct(${p.id})">Sil</button>
+                        </td>
+                    `;
+                    productsList.appendChild(row);
+                });
+            }
+
+            window.deleteProduct = async (id) => {
+                if (confirm('Bu ürünü silmek istediğinize emin misiniz?')) {
+                    try {
+                        const response = await fetch(`${API_BASE}/products/${id}/`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Bearer ${user.access}`
+                            }
+                        });
+
+                        if (response.ok) {
+                            alert('Ürün silindi');
+                            await loadProducts();
+                        } else {
+                            alert('Ürün silinirken hata oluştu');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting product:', error);
+                        alert('Ürün silinirken hata oluştu');
+                    }
+                }
+            };
+
+            // Search logic
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const rows = productsList.querySelectorAll('tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(term) ? '' : 'none';
+                });
+            });
+
+            loadProducts();
+        });
+    </script>
+</body>
+
+</html>

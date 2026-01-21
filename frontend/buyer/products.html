@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürünler - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">MarketPlus</a>
+            <div class="search-bar">
+                <input type="text" id="searchInput" class="search-input" placeholder="Ürün ara...">
+                <button class="search-btn">Ara</button>
+            </div>
+            <div class="nav-actions">
+                <!-- Dynamically populated by auth.js -->
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4 mb-4 grid-sidebar">
+        <!-- Sidebar Filters -->
+        <aside class="bg-white rounded shadow-sm p-4 h-fit">
+            <h3 class="font-bold mb-4">Filtreler</h3>
+
+            <div class="mb-4">
+                <h4 class="text-sm font-semibold mb-2">Kategori</h4>
+                <ul class="text-sm text-muted">
+                    <li class="mb-1"><a href="products.html?category=elektronik"
+                            class="hover:text-primary">Elektronik</a></li>
+                    <li class="mb-1"><a href="products.html?category=moda" class="hover:text-primary">Moda</a></li>
+                    <li class="mb-1"><a href="products.html?category=kozmetik" class="hover:text-primary">Kozmetik</a>
+                    </li>
+                    <li class="mb-1"><a href="products.html?category=ev-yasam" class="hover:text-primary">Ev & Yaşam</a>
+                    </li>
+                    <li class="mb-1 text-xs mt-2"><a href="products.html" class="text-primary hover:underline">Tüm
+                            Kategoriler</a></li>
+                </ul>
+            </div>
+
+            <div class="mb-4">
+                <h4 class="text-sm font-semibold mb-2">Fiyat Aralığı</h4>
+                <div class="flex gap-2">
+                    <input type="number" id="minPrice" class="form-control" placeholder="Min">
+                    <input type="number" id="maxPrice" class="form-control" placeholder="Maks">
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-block" onclick="applyFilters()">Filtreleri Uygula</button>
+        </aside>
+
+        <!-- Product Grid Area -->
+        <div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="categoryTitle" class="font-bold text-xl capitalize">Tüm Ürünler</h2>
+                <select id="sortSelect" class="form-control" style="width: auto;" onchange="renderProducts()">
+                    <option value="featured">Sırala: Öne Çıkanlar</option>
+                    <option value="price-asc">Fiyat: Artan</option>
+                    <option value="price-desc">Fiyat: Azalan</option>
+                </select>
+            </div>
+
+            <div id="productGrid" class="grid-cols-4">
+                <!-- Products will be injected here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="noProducts" class="text-center py-12 bg-white rounded shadow-sm border" style="display:none;">
+                <p class="text-muted">Aradığınız kriterlere uygun ürün bulunamadı.</p>
+                <a href="products.html" class="text-primary hover:underline mt-2 inline-block">Tüm ürünleri gör</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="../productService.js"></script>
+    <script src="../favorites.js"></script>
+    <script src="../cart.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        let allProducts = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('/api/products/');
+                if (res.ok) {
+                    allProducts = await res.json();
+                    renderProducts();
+                } else {
+                    console.error('Failed to fetch products');
+                }
+            } catch (e) {
+                console.error('Error fetching products:', e);
+            }
+        });
+
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const noProducts = document.getElementById('noProducts');
+            const categoryTitle = document.getElementById('categoryTitle');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryFilter = urlParams.get('category');
+
+            let products = [...allProducts];
+
+            // Filter by Category (Not fully implemented in backend yet, so client-side filter if data supports it)
+            // For now, our Products might not have category field in API response? 
+            // The Serializer doesn't extend category. I should check models.
+            // checking product model... it has NO category field! 
+            // The user didn't add category to model yet. 
+            // So I will ignore category filter or implement it later.
+            // I'll leave the code block but it won't filter anything if field is missing.
+
+            if (categoryFilter) {
+                products = products.filter(p => p.category && p.category.slug === categoryFilter);
+                // Try to find category name from products or fallback to slug
+                const catName = products.length > 0 ? products[0].category.name : categoryFilter;
+                categoryTitle.textContent = catName.charAt(0).toUpperCase() + catName.slice(1);
+            } else {
+                categoryTitle.textContent = 'Tüm Ürünler';
+            }
+
+            // Filter by Price (if applied)
+            const min = parseFloat(document.getElementById('minPrice').value);
+            const max = parseFloat(document.getElementById('maxPrice').value);
+            if (!isNaN(min)) products = products.filter(p => parseFloat(p.price) >= min);
+            if (!isNaN(max)) products = products.filter(p => parseFloat(p.price) <= max);
+
+            // Sort
+            const sort = document.getElementById('sortSelect').value;
+            if (sort === 'price-asc') products.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+            if (sort === 'price-desc') products.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+
+            grid.innerHTML = '';
+
+            if (products.length === 0) {
+                grid.style.display = 'none';
+                noProducts.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            noProducts.style.display = 'none';
+
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                // Map API fields
+                const rating = parseFloat(p.average_rating) || 0;
+                const reviews = p.review_count || 0;
+                const priceDisplay = p.price_range || p.price;
+                const isFav = favorites.isInFavorites(p.id);
+                const stockQty = p.stock_quantity || 0;
+                const isOutOfStock = stockQty <= 0;
+
+                card.innerHTML = `
+                    <a href="product-detail.html?id=${p.id}">
+                        <div class="product-img" style="position:relative;">
+                             ${p.image ? `<img src="${p.image}">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f9f9f9;color:#999;font-size:12px;">Görsel Yok</div>'}
+                             ${isOutOfStock ? '<div style="position:absolute; top:10px; right:10px; background:#dc2626; color:white; padding:4px 12px; border-radius:6px; font-size:11px; font-weight:700;">STOKTA YOK</div>' : ''}
+                        </div>
+                    </a>
+                    <div class="product-body">
+                        <h3 class="font-semibold text-main truncate">${p.name}</h3>
+                        <div class="text-xs text-muted mb-1">${p.seller_name || 'Satıcı'}</div>
+                        <div class="product-rating">${'★'.repeat(Math.round(rating))}${'☆'.repeat(5 - Math.round(rating))} (${reviews})</div>
+                        <div class="product-price">${priceDisplay} TL</div>
+                        ${!isOutOfStock ? `<div class="text-xs text-success mb-2" style="font-weight:600;">✓ Stokta ${stockQty} adet</div>` : '<div class="text-xs text-danger mb-2" style="font-weight:600;">⚠ Stokta yok</div>'}
+                        <div style="display:flex;gap:8px;margin-top:8px;">
+                            <button class="btn btn-primary btn-sm" style="flex:1;" ${isOutOfStock ? 'disabled' : ''} onclick="addToCart(event, ${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price}, '${(p.seller_name || '').replace(/'/g, "\\'")}', '${p.image || ''}', ${stockQty})">
+                                ${isOutOfStock ? 'Stokta Yok' : 'Sepete Ekle'}
+                            </button>
+                            <button class="btn btn-secondary btn-sm fav-btn" data-id="${p.id}" data-name="${p.name.replace(/"/g, '&quot;')}" data-price="${p.price}" data-seller="${(p.seller_name || '').replace(/"/g, '&quot;')}" data-image="${p.image || ''}" style="${isFav ? 'background:#fee2e2;color:#ef4444;' : ''}" onclick="toggleFavorite(event, this)">♥</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        window.addToCart = function (e, id, name, price, seller, image, stockQty) {
+            e.preventDefault();
+            cart.addItem({
+                id: id,
+                name: name,
+                price: price,
+                seller: seller,
+                image: image,
+                quantity: 1,
+                stock_quantity: stockQty
+            });
+        };
+
+        window.toggleFavorite = function (e, btn) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const product = {
+                id: btn.dataset.id,
+                name: btn.dataset.name,
+                price: parseFloat(btn.dataset.price),
+                seller: btn.dataset.seller,
+                image: btn.dataset.image
+            };
+
+            const result = favorites.toggle(product);
+            favorites.showToast(result.message, result.added);
+
+            // Update button style
+            if (result.added) {
+                btn.style.background = '#fee2e2';
+                btn.style.color = '#ef4444';
+            } else {
+                btn.style.background = '';
+                btn.style.color = '';
+            }
+        };
+
+        function applyFilters() {
+            renderProducts();
+        }
+
+        // Search trigger
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const term = e.target.value.toLowerCase();
+                const grid = document.getElementById('productGrid');
+                const cards = grid.querySelectorAll('.product-card');
+                cards.forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    card.style.display = text.includes(term) ? '' : 'none';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

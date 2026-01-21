@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesajlar - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="flex items-center gap-4">
+                <a href="../buyer/index.html" class="logo">MarketPlus</a>
+                <span class="badge badge-pending">Satıcı Paneli</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-semibold">TechWorld Inc.</span>
+                <div
+                    style="width: 32px; height: 32px; background: var(--secondary); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">
+                    TW</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container flex" style="align-items: flex-start;">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 flex-shrink-0">
+            <nav class="flex flex-col gap-1">
+                <a href="seller-products.html" class="sidebar-link">Ürünler</a>
+                <a href="seller-orders.html" class="sidebar-link">Siparişler <span
+                        class="badge badge-danger ml-auto">0</span></a>
+                <a href="seller-messages.html" class="sidebar-link active">Mesajlar</a>
+                <a href="seller-dashboard.html" class="sidebar-link">Analitik</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6" style="height: calc(100vh - 4rem); display: flex; flex-direction: column;">
+            <div class="flex flex-1 bg-white rounded shadow-sm border overflow-hidden">
+                <!-- Inbox List -->
+                <div class="w-1/3 border-r flex flex-col">
+                    <div class="p-4 border-b">
+                        <input type="text" class="form-control" placeholder="Mesajlarda ara...">
+                    </div>
+                    <div id="threadList" class="flex-1 overflow-y-auto">
+                        <p class="text-center text-muted p-4">Yükleniyor...</p>
+                    </div>
+                </div>
+
+                <!-- Chat View -->
+                <div class="flex-1 flex flex-col bg-gray-50">
+                    <div id="chatHeader" class="p-4 border-b flex justify-between items-center bg-white"
+                        style="display:none;">
+                        <div>
+                            <div id="chatTitle" class="font-bold">Müşteri</div>
+                            <div id="chatSubtitle" class="text-xs text-muted">Sipariş hakkında</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm">Siparişi Gör</button>
+                    </div>
+
+                    <div id="chatEmptyState" class="flex-1 flex items-center justify-center text-muted flex-col">
+                        <div style="font-size: 3rem;">💬</div>
+                        <p>Bir sohbet seçin</p>
+                    </div>
+
+                    <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-4" style="display:none;">
+                        <!-- Messages will appear here -->
+                    </div>
+
+                    <div id="chatInputArea" class="p-4 border-t bg-white" style="display:none;">
+                        <div class="flex gap-2 mb-2">
+                            <button class="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200"
+                                onclick="insertQuick('Sabrınız için teşekkürler')">Sabrınız için teşekkürler</button>
+                            <button class="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200"
+                                onclick="insertQuick('Siparişiniz kargoya verildi')">Siparişiniz kargoya
+                                verildi</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="messageInput" class="form-control" placeholder="Mesajınızı yazın...">
+                            <button class="btn btn-primary" onclick="sendMessage()">Gönder</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../auth.js"></script>
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+        let currentUser = null;
+        let activeConversationId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            currentUser = auth.getUser();
+            if (!currentUser || currentUser.role !== 'SELLER') {
+                window.location.href = '../buyer/login.html';
+                return;
+            }
+
+            await loadConversations();
+        });
+
+        async function loadConversations() {
+            try {
+                const res = await fetch(`${API_BASE}/messaging/conversations/`, {
+                    headers: { 'Authorization': `Bearer ${currentUser.access}` }
+                });
+                if (res.ok) {
+                    const threads = await res.json();
+                    renderThreads(threads);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function renderThreads(threads) {
+            const list = document.getElementById('threadList');
+            if (threads.length === 0) {
+                list.innerHTML = '<p class="text-center text-muted p-4">Henüz mesajınız yok.</p>';
+                return;
+            }
+
+            let html = '';
+            threads.forEach(t => {
+                // Determine display name (Buyer name)
+                const other = t.participants.find(p => p.id !== currentUser.id) || { first_name: 'Müşteri', last_name: '' };
+                const name = (other.first_name + ' ' + other.last_name).trim() || other.email || 'Müşteri';
+
+                html += `
+                    <div class="p-4 border-b hover:bg-white cursor-pointer transition bg-white ${activeConversationId === t.id ? 'bg-blue-50 border-l-4 border-l-primary' : ''}" 
+                        onclick="loadChat(${t.id}, '${name}', ${t.order || null})">
+                        <div class="flex justify-between mb-1">
+                            <span class="font-bold text-sm">${name}</span>
+                            <span class="text-xs text-muted">${new Date(t.updated_at).toLocaleDateString('tr-TR')}</span>
+                        </div>
+                        <div class="text-xs text-muted mb-1">Sipariş #${t.order || '?'}</div>
+                        <div class="text-sm truncate text-muted">${t.last_message ? t.last_message.content : '...'}</div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        async function loadChat(convId, title, orderId) {
+            activeConversationId = convId;
+            document.getElementById('chatEmptyState').style.display = 'none';
+            document.getElementById('chatHeader').style.display = 'flex';
+            document.getElementById('chatMessages').style.display = 'block';
+            document.getElementById('chatInputArea').style.display = 'block';
+
+            document.getElementById('chatTitle').textContent = title;
+            document.getElementById('chatSubtitle').textContent = orderId ? `Sipariş #${orderId}` : '';
+
+            await loadConversations(); // refresh list to highlight active
+
+            const msgContainer = document.getElementById('chatMessages');
+            msgContainer.innerHTML = '<p class="text-center text-muted">Yükleniyor...</p>';
+
+            try {
+                const res = await fetch(`${API_BASE}/messaging/conversations/${convId}/messages/`, {
+                    headers: { 'Authorization': `Bearer ${currentUser.access}` }
+                });
+                if (res.ok) {
+                    const messages = await res.json();
+                    renderMessages(messages);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            if (messages.length === 0) {
+                container.innerHTML = '<p class="text-center text-muted">Mesaj yok.</p>';
+                return;
+            }
+
+            let html = '';
+            messages.forEach(m => {
+                const isMe = m.sender_id === currentUser.id;
+                html += `
+                    <div class="flex gap-2 ${isMe ? 'flex-row-reverse' : ''}">
+                        <div style="width: 32px; height: 32px; background: ${isMe ? 'var(--secondary)' : '#ddd'}; border-radius: 50%; display:flex; align-items:center; justify-content:center; color:white; font-size:10px;">
+                            ${isMe ? 'ME' : 'C'}
+                        </div>
+                        <div class="${isMe ? 'bg-primary text-white' : 'bg-white border'} p-3 rounded-lg text-sm max-w-md shadow-sm">
+                            ${m.content}
+                            <div class="text-xs opacity-70 mt-1 text-right">${new Date(m.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const content = input.value.trim();
+            if (!content || !activeConversationId) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/messaging/conversations/${activeConversationId}/messages/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.access}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                if (res.ok) {
+                    input.value = '';
+                    // Reload messages
+                    const reloadRes = await fetch(`${API_BASE}/messaging/conversations/${activeConversationId}/messages/`, {
+                        headers: { 'Authorization': `Bearer ${currentUser.access}` }
+                    });
+                    if (reloadRes.ok) {
+                        const messages = await reloadRes.json();
+                        renderMessages(messages);
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function insertQuick(text) {
+            document.getElementById('messageInput').value = text;
+        }
+    </script>
+</body>
+
+</html>

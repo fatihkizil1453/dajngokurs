@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raporlar - MarketPlus Admin</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: #1e293b;
+        }
+
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: #0f172a;
+            color: #94a3b8;
+            border: none;
+            height: 100vh;
+        }
+
+        .sidebar-link {
+            color: #94a3b8;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: #1e293b;
+            color: white;
+            border-right: none;
+        }
+
+        .main-content {
+            background: #f1f5f9;
+            padding: 2rem;
+            border-top-left-radius: 1rem;
+        }
+    </style>
+</head>
+
+<body class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar p-4">
+        <div class="mb-8 px-4 flex items-center gap-2 text-white font-bold text-xl">
+            <span>MarketPlus</span> <span class="text-xs bg-primary px-1 rounded">ADMIN</span>
+        </div>
+        <nav class="flex flex-col gap-1">
+            <div class="px-4 text-xs font-semibold uppercase tracking-wider mb-2 mt-4">Platform</div>
+            <a href="admin-dashboard.html" class="sidebar-link rounded-md">Panel</a>
+            <a href="admin-sellers.html" class="sidebar-link rounded-md">Satıcılar</a>
+
+            <div class="px-4 text-xs font-semibold uppercase tracking-wider mb-2 mt-6">Operasyonlar</div>
+            <a href="admin-disputes.html" class="sidebar-link rounded-md">İtirazlar <span
+                    class="bg-red-500 text-white text-xs px-1 rounded ml-auto">5</span></a>
+            <a href="admin-reports.html" class="sidebar-link active rounded-md">Raporlar</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="font-bold text-2xl text-slate-800">Finansal Raporlar</h1>
+            <div class="flex gap-2">
+                <button class="btn btn-secondary btn-sm bg-white">Son 30 Gün</button>
+                <button class="btn btn-primary btn-sm">PDF Dışa Aktar</button>
+            </div>
+        </div>
+
+        <!-- Charts Area -->
+        <div class="grid-cols-2 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                <h3 class="font-bold text-lg mb-4 text-slate-700">Toplam İşlem Hacmi (GMV)</h3>
+                <div
+                    style="height: 300px; background: #f8fafc; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
+                    <!-- Grafik Yer Tutucu -->
+                    [Çizgi Grafik Görselleştirmesi]
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                <h3 class="font-bold text-lg mb-4 text-slate-700">Gelir Dağılımı</h3>
+                <div
+                    style="height: 300px; background: #f8fafc; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
+                    <!-- Grafik Yer Tutucu -->
+                    [Halka Grafik: Komisyon vs Ücretler]
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="bg-white rounded-lg shadow-sm border border-slate-200">
+            <div class="p-4 border-b font-bold text-lg text-slate-700">Aylık Eksttreler</div>
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 text-slate-500 font-semibold text-xs uppercase">
+                    <tr>
+                        <th class="p-4">Dönem</th>
+                        <th class="p-4">Toplam Sipariş</th>
+                        <th class="p-4">GMV</th>
+                        <th class="p-4">Net Komisyon</th>
+                        <th class="p-4 text-right">Durum</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm divide-y divide-slate-100">
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4 font-semibold">Ocak 2026 (Bu ay)</td>
+                        <td class="p-4">1,240</td>
+                        <td class="p-4">245,000.00 TL</td>
+                        <td class="p-4">24,500.00 TL</td>
+                        <td class="p-4 text-right"><span class="badge badge-pending">Açık</span></td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4 font-semibold">Aralık 2025</td>
+                        <td class="p-4">3,500</td>
+                        <td class="p-4">850,000.00 TL</td>
+                        <td class="p-4">85,000.00 TL</td>
+                        <td class="p-4 text-right"><span class="badge badge-success">Tamamlandı</span></td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4 font-semibold">Kasım 2025</td>
+                        <td class="p-4">2,100</td>
+                        <td class="p-4">420,000.00 TL</td>
+                        <td class="p-4">42,000.00 TL</td>
+                        <td class="p-4 text-right"><span class="badge badge-success">Tamamlandı</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+
+</html>

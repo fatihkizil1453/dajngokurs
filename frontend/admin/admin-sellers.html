@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satıcı Yönetimi - MarketPlus Admin</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #1e293b;
+        }
+
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: #0f172a;
+            color: #94a3b8;
+            border: none;
+            height: 100vh;
+        }
+
+        .sidebar-link {
+            color: #94a3b8;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: #1e293b;
+            color: white;
+            border-right: none;
+        }
+
+        .main-content {
+            background: #f1f5f9;
+            padding: 2rem;
+            border-top-left-radius: 1rem;
+        }
+    </style>
+</head>
+
+<body class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar p-4">
+        <div class="mb-8 px-4 flex items-center gap-2 text-white font-bold text-xl">
+            <span>MarketPlus</span> <span class="text-xs bg-primary px-1 rounded">ADMIN</span>
+        </div>
+        <nav class="flex flex-col gap-1">
+            <div class="px-4 text-xs font-semibold uppercase tracking-wider mb-2 mt-4">Platform</div>
+            <a href="admin-dashboard.html" class="sidebar-link rounded-md">Panel</a>
+            <a href="admin-sellers.html" class="sidebar-link active rounded-md">Satıcılar</a>
+            <a href="#" class="sidebar-link rounded-md">Kullanıcılar</a>
+
+            <div class="px-4 text-xs font-semibold uppercase tracking-wider mb-2 mt-6">Operasyonlar</div>
+            <a href="admin-disputes.html" class="sidebar-link rounded-md">İtirazlar <span
+                    class="bg-red-500 text-white text-xs px-1 rounded ml-auto">5</span></a>
+            <a href="admin-reports.html" class="sidebar-link rounded-md">Raporlar</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="font-bold text-2xl text-slate-800 mb-6">Satıcı Yönetimi</h1>
+
+        <div class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+            <!-- Toolbar -->
+            <div class="p-4 border-b flex justify-between bg-gray-50">
+                <div class="flex gap-2">
+                    <input type="text" class="form-control" placeholder="İsim, ID, e-posta ile ara..."
+                        style="width: 300px;">
+                    <select class="form-control" style="width: auto;">
+                        <option>Durum: Hepsi</option>
+                        <option>Beklemede</option>
+                        <option>Onaylandı</option>
+                        <option>Askıya Alındı</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-sm">Listeyi Dışa Aktar</button>
+            </div>
+
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 text-slate-500 font-semibold text-xs uppercase">
+                    <tr>
+                        <th class="p-4">Satıcı Bilgisi</th>
+                        <th class="p-4">Mağaza Adı</th>
+                        <th class="p-4">Katılma Tarihi</th>
+                        <th class="p-4">Durum</th>
+                        <th class="p-4">Risk Skoru</th>
+                        <th class="p-4 text-right">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm divide-y divide-slate-100">
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4">
+                            <div class="font-semibold text-slate-800">John Doe</div>
+                            <div class="text-xs text-muted">john@techworld.com</div>
+                        </td>
+                        <td class="p-4">TechWorld Inc.</td>
+                        <td class="p-4">01 Ocak 2025</td>
+                        <td class="p-4"><span class="badge badge-success">Onaylandı</span></td>
+                        <td class="p-4 text-success">Düşük (0.5%)</td>
+                        <td class="p-4 text-right">
+                            <button class="text-primary hover:underline mr-2">Görüntüle</button>
+                            <button class="text-danger hover:underline">Askıya Al</button>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50 bg-yellow-50">
+                        <td class="p-4">
+                            <div class="font-semibold text-slate-800">Sarah Lee</div>
+                            <div class="text-xs text-muted">sarah@alpha.com</div>
+                        </td>
+                        <td class="p-4">Alpha Books LLC</td>
+                        <td class="p-4">16 Ocak 2026</td>
+                        <td class="p-4"><span class="badge badge-pending">Beklemede</span></td>
+                        <td class="p-4 text-muted">-</td>
+                        <td class="p-4 text-right">
+                            <button class="btn btn-primary btn-sm">Başvuruyu İncele</button>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4">
+                            <div class="font-semibold text-slate-800">Mike Brown</div>
+                            <div class="text-xs text-muted">mike@scam.com</div>
+                        </td>
+                        <td class="p-4">Cheap Stuff Co.</td>
+                        <td class="p-4">12 Aralık 2025</td>
+                        <td class="p-4"><span class="badge badge-danger">Askıya Alındı</span></td>
+                        <td class="p-4 text-danger font-bold">Yüksek (85%)</td>
+                        <td class="p-4 text-right">
+                            <button class="text-primary hover:underline">Detaylar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="p-4 bg-gray-50 border-t flex justify-between items-center text-xs text-muted">
+                <span>145 satıcıdan 1-10 arası gösteriliyor</span>
+                <div class="flex gap-1">
+                    <button class="p-1 border rounded bg-white">Geri</button>
+                    <button class="p-1 border rounded bg-white">1</button>
+                    <button class="p-1 border rounded bg-white">2</button>
+                    <button class="p-1 border rounded bg-white">İleri</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</body>
+
+</html>

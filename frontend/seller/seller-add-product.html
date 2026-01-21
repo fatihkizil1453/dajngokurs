@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Düzenle - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="flex items-center gap-4">
+                <a href="../buyer/index.html" class="logo">MarketPlus</a>
+                <span class="badge badge-pending">Satıcı Paneli</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-semibold store-name">Mağaza Adı</span>
+                <div class="store-initials"
+                    style="width: 32px; height: 32px; background: var(--secondary); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">
+                    S</div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container flex" style="align-items: flex-start;">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 flex-shrink-0">
+            <nav class="flex flex-col gap-1">
+                <a href="seller-products.html" class="sidebar-link active">Ürünler</a>
+                <a href="seller-orders.html" class="sidebar-link">Siparişler <span
+                        class="badge badge-danger ml-auto">0</span></a>
+                <a href="seller-messages.html" class="sidebar-link">Mesajlar</a>
+                <a href="seller-dashboard.html" class="sidebar-link">Analitik</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <div class="flex items-center gap-4 mb-6">
+                <a href="seller-products.html" class="text-primary hover:underline">← Ürün Listesine Dön</a>
+                <h1 id="pageTitle" class="font-bold text-2xl">Yeni Ürün Ekle</h1>
+            </div>
+
+            <form id="productForm" class="bg-white rounded shadow-sm border p-6">
+                <div class="grid-cols-2">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label class="label">Ürün Adı</label>
+                        <input type="text" id="name" class="form-control" placeholder="Örn: Kablosuz Bluetooth Kulaklık"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Kategori</label>
+                        <select id="category" class="form-control" required>
+                            <option value="">Kategoriler yükleniyor...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Fiyat (TL)</label>
+                        <input type="number" id="price" class="form-control" placeholder="0.00" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Stok Adedi</label>
+                        <input type="number" id="stock" class="form-control" placeholder="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">SKU (Stok Kodu)</label>
+                        <input type="text" id="sku" class="form-control" placeholder="PRD-123">
+                    </div>
+
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label class="label">Ürün Açıklaması</label>
+                        <textarea id="description" class="form-control" rows="5"
+                            placeholder="Ürün özelliklerini buraya yazın..."></textarea>
+                    </div>
+
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label class="label">Ürün Görseli (Dosya Seçin)</label>
+                        <input type="file" id="image_file" class="form-control" accept="image/*">
+                        <div id="image_preview" class="mt-2" style="display:none;">
+                            <img src="" alt="Önizleme"
+                                style="max-width: 200px; border-radius: 4px; border: 1px solid #ddd;">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 mt-6" style="grid-column: span 2;">
+                        <button type="submit" id="submitBtn" class="btn btn-primary">Ürünü Yayınla</button>
+                        <button type="button" class="btn btn-secondary"
+                            onclick="window.location.href='seller-products.html'">İptal</button>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script src="../productService.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+        let categories = [];
+
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_BASE}/products/categories/`);
+                if (!response.ok) throw new Error('Failed to fetch categories');
+
+                categories = await response.json();
+                const categorySelect = document.getElementById('category');
+
+                // Clear loading option
+                categorySelect.innerHTML = '<option value="">Kategori Seçiniz</option>';
+
+                // Populate with real categories from admin panel
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.id;
+                    option.textContent = cat.name;
+                    categorySelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                document.getElementById('category').innerHTML = '<option value="">Kategori yüklenemedi</option>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = auth.getUser();
+            if (!user || user.role !== 'SELLER') {
+                window.location.href = '../buyer/index.html';
+                return;
+            }
+
+            // Load categories first
+            await loadCategories();
+
+            // URL Params for Edit mode
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            let base64Image = '';
+
+            // UI Label and Data loading if editing
+            if (productId) {
+                document.getElementById('pageTitle').textContent = 'Ürünü Düzenle';
+                document.getElementById('submitBtn').textContent = 'Değişiklikleri Kaydet';
+
+                const product = productService.getProductById(productId);
+                if (product) {
+                    document.getElementById('name').value = product.name;
+                    // Set category by ID if it's a number, or try to match by name
+                    const categoryValue = product.category;
+                    if (typeof categoryValue === 'number') {
+                        document.getElementById('category').value = categoryValue;
+                    } else if (typeof categoryValue === 'string') {
+                        // Try to find category by name (for backward compatibility)
+                        const matchedCat = categories.find(c => c.name.toLowerCase() === categoryValue.toLowerCase() || c.slug === categoryValue.toLowerCase());
+                        if (matchedCat) {
+                            document.getElementById('category').value = matchedCat.id;
+                        }
+                    }
+                    document.getElementById('price').value = product.price;
+                    document.getElementById('stock').value = product.stock;
+                    document.getElementById('sku').value = product.sku || '';
+                    document.getElementById('description').value = product.description || '';
+
+                    if (product.image) {
+                        const preview = document.getElementById('image_preview');
+                        preview.style.display = 'block';
+                        preview.querySelector('img').src = product.image;
+                        base64Image = product.image;
+                    }
+                }
+            }
+
+            // Image to Base64
+            document.getElementById('image_file').addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        base64Image = event.target.result;
+                        const preview = document.getElementById('image_preview');
+                        preview.style.display = 'block';
+                        preview.querySelector('img').src = base64Image;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Seller Info UI
+            const storeNameEl = document.querySelector('.store-name');
+            const storeInitialsEl = document.querySelector('.store-initials');
+            const businessName = user.seller_profile?.business_name || (user.first_name + ' Store');
+            if (storeNameEl) storeNameEl.textContent = businessName;
+            if (storeInitialsEl) storeInitialsEl.textContent = businessName.substring(0, 2).toUpperCase();
+
+            // Form Submit (Add or Update)
+            document.getElementById('productForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const selectedCategoryId = parseInt(document.getElementById('category').value);
+                const selectedCategory = categories.find(c => c.id === selectedCategoryId);
+
+                if (!selectedCategoryId) {
+                    alert('Lütfen bir kategori seçin!');
+                    return;
+                }
+
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Kaydediliyor...';
+
+                try {
+                    // Prepare product data for API
+                    const productData = {
+                        name: document.getElementById('name').value,
+                        category: selectedCategoryId, // Category ID for backend
+                        description: document.getElementById('description').value || 'Ürün açıklaması',
+                    };
+
+                    // Prepare variant data (price and stock)
+                    const variantData = {
+                        sku: document.getElementById('sku').value || `SKU-${Date.now()}`,
+                        name: 'Standart',
+                        price: parseFloat(document.getElementById('price').value),
+                        stock_quantity: parseInt(document.getElementById('stock').value),
+                    };
+
+                    // Create product via API
+                    const response = await fetch(`${API_BASE}/products/`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${user.access}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            ...productData,
+                            variants: [variantData]
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.detail || 'Ürün eklenirken hata oluştu');
+                    }
+
+                    const createdProduct = await response.json();
+
+                    // Upload image if provided
+                    if (base64Image) {
+                        // Convert base64 to blob
+                        const blob = await fetch(base64Image).then(r => r.blob());
+                        const formData = new FormData();
+                        formData.append('image', blob, 'product-image.jpg');
+                        formData.append('is_main', 'true');
+
+                        await fetch(`${API_BASE}/products/${createdProduct.id}/upload_image/`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${user.access}`
+                            },
+                            body: formData
+                        });
+                    }
+
+                    alert('Ürün başarıyla eklendi!');
+                    window.location.href = 'seller-products.html';
+
+                } catch (error) {
+                    console.error('Error saving product:', error);
+                    alert('Ürün kaydedilirken hata oluştu: ' + error.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Ürünü Yayınla';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,172 @@
+Creating test database for alias 'default'...
+EEE
+======================================================================
+ERROR: test_login (apps.accounts.tests.AuthTests.test_login)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\fatih\OneDrive\Masaüstü\eticaretsite\apps\accounts\tests.py", line 35, in test_login
+    user = User.objects.create_user(email='test@example.com', password='password', role='BUYER')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: UserManager.create_user() missing 1 required positional argument: 'username'
+
+======================================================================
+ERROR: test_register_buyer (apps.accounts.tests.AuthTests.test_register_buyer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\fatih\OneDrive\Masaüstü\eticaretsite\apps\accounts\tests.py", line 30, in test_register_buyer
+    response = self.client.post(url, data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\test.py", line 299, in post
+    response = super().post(
+               ^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\test.py", line 213, in post
+    return self.generic('POST', path, data, content_type, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\test.py", line 237, in generic
+    return super().generic(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\test\client.py", line 671, in generic
+    return self.request(**r)
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\test.py", line 289, in request
+    return super().request(**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\test.py", line 241, in request
+    request = super().request(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\test\client.py", line 1087, in request
+    self.check_exception(response)
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\test\client.py", line 802, in check_exception
+    raise exc_value
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\views\generic\base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\generics.py", line 194, in post
+    return self.create(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\mixins.py", line 19, in create
+    self.perform_create(serializer)
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\mixins.py", line 24, in perform_create
+    serializer.save()
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\serializers.py", line 210, in save
+    self.instance = self.create(validated_data)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\OneDrive\Masaüstü\eticaretsite\apps\accounts\serializers.py", line 43, in create
+    user = User.objects.create_user(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\auth\models.py", line 175, in create_user
+    return self._create_user(username, email, password, **extra_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\auth\models.py", line 162, in _create_user
+    user = self._create_user_object(username, email, password, **extra_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\auth\models.py", line 154, in _create_user_object
+    user = self.model(username=username, email=email, **extra_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 590, in __init__
+    raise TypeError(
+TypeError: User() got unexpected keyword arguments: 'username'
+
+======================================================================
+ERROR: test_register_seller (apps.accounts.tests.AuthTests.test_register_seller)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\fatih\OneDrive\Masaüstü\eticaretsite\apps\accounts\tests.py", line 18, in test_register_seller
+    response = self.client.post(url, data)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\test.py", line 299, in post
+    response = super().post(
+               ^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\test.py", line 213, in post
+    return self.generic('POST', path, data, content_type, **extra)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\test.py", line 237, in generic
+    return super().generic(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\test\client.py", line 671, in generic
+    return self.request(**r)
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\test.py", line 289, in request
+    return super().request(**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\test.py", line 241, in request
+    request = super().request(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\test\client.py", line 1087, in request
+    self.check_exception(response)
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\test\client.py", line 802, in check_exception
+    raise exc_value
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\views\generic\base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\generics.py", line 194, in post
+    return self.create(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\mixins.py", line 19, in create
+    self.perform_create(serializer)
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\mixins.py", line 24, in perform_create
+    serializer.save()
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\rest_framework\serializers.py", line 210, in save
+    self.instance = self.create(validated_data)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\OneDrive\Masaüstü\eticaretsite\apps\accounts\serializers.py", line 43, in create
+    user = User.objects.create_user(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\auth\models.py", line 175, in create_user
+    return self._create_user(username, email, password, **extra_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\auth\models.py", line 162, in _create_user
+    user = self._create_user_object(username, email, password, **extra_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\contrib\auth\models.py", line 154, in _create_user_object
+    user = self.model(username=username, email=email, **extra_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fatih\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 590, in __init__
+    raise TypeError(
+TypeError: User() got unexpected keyword arguments: 'username'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.042s
+
+FAILED (errors=3)
+Destroying test database for alias 'default'...
+Found 3 test(s).
+System check identified no issues (0 silenced).

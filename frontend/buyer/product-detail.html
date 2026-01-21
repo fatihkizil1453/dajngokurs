@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Detayı - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .pdp-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+        }
+
+        .gallery-main {
+            height: 400px;
+            background: #f3f4f6;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">MarketPlus</a>
+            <div class="nav-actions">
+                <!-- Dynamically populated by auth.js -->
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4 mb-4">
+        <div id="productDetail" class="pdp-grid bg-white p-4 rounded shadow-sm">
+            <!-- Left: Gallery -->
+            <div>
+                <div class="gallery-main" id="mainImage">
+                    <span class="text-muted">Görsel Yükleniyor...</span>
+                </div>
+            </div>
+
+            <!-- Right: Details -->
+            <div>
+                <h1 id="prodName" class="font-bold text-main" style="font-size: 2rem;">Ürün Adı</h1>
+                <div class="flex items-center gap-2 mt-2 mb-4">
+                    <span id="prodRating" class="text-accent font-bold">★★★★★</span>
+                    <span id="prodReviews" class="text-muted text-sm">(0 Değerlendirme)</span>
+                    <span class="badge badge-success" id="stockStatus">Stokta Var</span>
+                </div>
+
+                <h2 id="prodPrice" class="font-bold text-primary mb-4" style="font-size: 2rem;">0.00 TL</h2>
+
+                <div class="mb-4">
+                    <p id="prodDescShort" class="text-muted text-sm line-clamp-3">
+                        Ürün açıklaması yükleniyor...
+                    </p>
+                </div>
+
+                <div class="p-4 bg-gray-50 rounded mb-4 border">
+                    <div class="text-sm font-semibold mb-2">Satıcı: <span id="prodSeller" class="text-primary">Satıcı
+                            Adı</span></div>
+                    <div class="text-xs text-muted">Gönderim Yeri: İstanbul, TR</div>
+                </div>
+
+                <div class="flex gap-4">
+                    <input type="number" id="product_qty" class="form-control" value="1" min="1" style="width: 80px;">
+                    <button id="addBtn" class="btn btn-primary btn-block">Sepete Ekle</button>
+                    <button id="favBtn" class="btn btn-secondary" title="Favorilere Ekle">♥</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews & Description -->
+        <div class="mt-4 bg-white p-4 rounded shadow-sm">
+            <h3 class="font-bold mb-4 border-b pb-2">Açıklama</h3>
+            <p id="prodDescFull" class="text-muted leading-relaxed">
+                Açıklama yükleniyor...
+            </p>
+        </div>
+
+        <!-- REVIEWS SECTION -->
+        <div class="mt-4 bg-white p-4 rounded shadow-sm">
+            <h3 class="font-bold mb-4 border-b pb-2">Değerlendirmeler (<span id="reviewCountHeader">0</span>)</h3>
+
+            <!-- Summary -->
+            <div class="flex items-center gap-4 mb-6">
+                <div class="text-4xl font-bold text-accent" id="avgRatingDisplay">0.0</div>
+                <div>
+                    <div class="flex text-accent" id="avgStars">☆☆☆☆☆</div>
+                    <div class="text-xs text-muted">Ortalama Puan</div>
+                </div>
+            </div>
+
+            <!-- Review Form (Only if logged in) -->
+            <div id="reviewFormContainer" class="mb-8 p-4 bg-gray-50 rounded border hidden">
+                <h4 class="font-semibold mb-2">Değerlendirme Yap</h4>
+                <form id="reviewForm">
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium mb-1">Puanınız</label>
+                        <div class="rating-input" style="display: flex; gap: 4px; font-size: 2rem; cursor: pointer;">
+                            <span data-value="1" style="color: #d1d5db; transition: color 0.2s;">★</span>
+                            <span data-value="2" style="color: #d1d5db; transition: color 0.2s;">★</span>
+                            <span data-value="3" style="color: #d1d5db; transition: color 0.2s;">★</span>
+                            <span data-value="4" style="color: #d1d5db; transition: color 0.2s;">★</span>
+                            <span data-value="5" style="color: #d1d5db; transition: color 0.2s;">★</span>
+                        </div>
+                        <input type="hidden" id="ratingInput" name="rating" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium mb-1">Yorumunuz</label>
+                        <textarea id="commentInput" rows="3" class="form-control w-full p-2 border rounded"
+                            required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Gönder</button>
+                </form>
+            </div>
+            <div id="loginPrompt" class="mb-8 p-4 bg-gray-50 rounded border text-center hidden">
+                <p>Değerlendirme yapmak için <a href="login.html" class="text-primary font-bold">giriş yapmalısınız</a>.
+                </p>
+            </div>
+
+            <!-- Review List -->
+            <div id="reviewsList" class="space-y-4">
+                <p class="text-muted text-center">Henüz değerlendirme yok.</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="../productService.js"></script>
+    <script src="../favorites.js"></script>
+    <script src="../cart.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const currentUser = auth.getUser();
+
+            if (!id) {
+                document.querySelector('main').innerHTML = '<div class="text-center py-12"><h1>Ürün bulunamadı.</h1><a href="products.html" class="text-primary hover:underline">Alışverişe dön</a></div>';
+                return;
+            }
+
+            // 1. Fetch Product Data (From API)
+            try {
+                const res = await fetch(`/api/products/${id}/`);
+                if (!res.ok) throw new Error('Product not found');
+
+                const product = await res.json();
+                renderProduct(product);
+                loadReviews(id); // 2. Load Reviews
+            } catch (err) {
+                console.error(err);
+                document.querySelector('main').innerHTML = '<div class="text-center py-12"><h1>Ürün bulunamadı.</h1><a href="products.html" class="text-primary hover:underline">Alışverişe dön</a></div>';
+            };
+
+            // Setup Review Form Logic
+            setupReviewForm(id, currentUser);
+
+            function renderProduct(product) {
+                document.title = `${product.name} - MarketPlus`;
+                document.getElementById('prodName').textContent = product.name;
+
+                // Calculate total stock from variants
+                let totalStock = 0;
+                if (product.variants && product.variants.length > 0) {
+                    totalStock = product.variants.reduce((sum, v) => sum + (v.stock_quantity || 0), 0);
+                }
+                const isOutOfStock = totalStock <= 0;
+
+                // Price - Handling price range or single price
+                const priceDisplay = product.price_range || (product.variants && product.variants.length ? product.variants[0].price : '0.00');
+                document.getElementById('prodPrice').textContent = `${priceDisplay} TL`;
+
+                document.getElementById('prodSeller').textContent = product.seller_name || 'Satıcı';
+                document.getElementById('prodDescShort').textContent = product.description.substring(0, 150) + '...';
+                document.getElementById('prodDescFull').textContent = product.description;
+
+                // Ratings
+                const rating = parseFloat(product.average_rating) || 0;
+                document.getElementById('prodReviews').textContent = `(${product.review_count || 0} Değerlendirme)`;
+
+                const stars = '★'.repeat(Math.round(rating)) + '☆'.repeat(5 - Math.round(rating));
+                document.getElementById('prodRating').textContent = stars;
+                document.getElementById('avgRatingDisplay').textContent = rating.toFixed(1);
+                document.getElementById('avgStars').textContent = stars;
+                document.getElementById('reviewCountHeader').textContent = product.review_count || 0;
+
+                // Image - Display product image if available
+                const mainImageContainer = document.getElementById('mainImage');
+                if (product.image) {
+                    mainImageContainer.innerHTML = `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
+                } else {
+                    mainImageContainer.innerHTML = '<span class="text-muted">Görsel Yok</span>';
+                }
+
+                // Stock status
+                const stockBadge = document.getElementById('stockStatus');
+                const addBtn = document.getElementById('addBtn');
+
+                if (product.status !== 'ACTIVE') {
+                    stockBadge.textContent = 'Satışta Değil';
+                    stockBadge.className = 'badge badge-danger';
+                    addBtn.disabled = true;
+                } else if (isOutOfStock) {
+                    stockBadge.textContent = 'Stokta Yok';
+                    stockBadge.className = 'badge badge-danger';
+                    addBtn.disabled = true;
+                    addBtn.textContent = 'Stokta Yok';
+                } else {
+                    stockBadge.textContent = `Stokta ${totalStock} adet`;
+                    stockBadge.className = 'badge badge-success';
+                    addBtn.disabled = false;
+                    addBtn.textContent = 'Sepete Ekle';
+                }
+
+                // Add to Cart Logic
+                addBtn.onclick = () => {
+                    if (isOutOfStock) return;
+
+                    const qty = parseInt(document.getElementById('product_qty').value) || 1;
+                    const price = product.variants && product.variants.length ? parseFloat(product.variants[0].price) : 0;
+                    cart.addItem({
+                        id: product.id,
+                        name: product.name,
+                        price: price,
+                        seller: product.seller_name || 'Satıcı',
+                        image: '',
+                        quantity: qty,
+                        stock_quantity: totalStock
+                    });
+                };
+
+                // Favorites Logic
+                const favBtn = document.getElementById('favBtn');
+                const updateFavButton = () => {
+                    if (favorites.isInFavorites(product.id)) {
+                        favBtn.style.background = '#fee2e2';
+                        favBtn.style.color = '#ef4444';
+                        favBtn.title = 'Favorilerden Çıkar';
+                    } else {
+                        favBtn.style.background = '';
+                        favBtn.style.color = '';
+                        favBtn.title = 'Favorilere Ekle';
+                    }
+                };
+                updateFavButton();
+
+                favBtn.onclick = () => {
+                    const price = product.variants && product.variants.length ? parseFloat(product.variants[0].price) : 0;
+                    const result = favorites.toggle({
+                        id: product.id,
+                        name: product.name,
+                        price: price,
+                        seller: product.seller_name || 'Satıcı',
+                        image: ''
+                    });
+                    favorites.showToast(result.message, result.added);
+                    updateFavButton();
+                };
+            }
+
+            async function loadReviews(productId) {
+                try {
+                    const res = await fetch(`/api/reviews/?product=${productId}`);
+                    if (res.ok) {
+                        const reviews = await res.json();
+                        renderReviews(reviews);
+                    }
+                } catch (e) { console.error('Error loading reviews', e); }
+            }
+
+            function renderReviews(reviews) {
+                const list = document.getElementById('reviewsList');
+                if (!reviews || reviews.length === 0) {
+                    list.innerHTML = '<p class="text-muted text-center">Henüz değerlendirme yok.</p>';
+                    return;
+                }
+
+                let html = '';
+                reviews.forEach(r => {
+                    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                    const date = new Date(r.created_at).toLocaleDateString('tr-TR');
+                    html += `
+                        <div class="border-b pb-4 last:border-0">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="font-semibold text-sm">${r.author}</div>
+                                <div class="text-xs text-muted">${date}</div>
+                            </div>
+                            <div class="text-accent text-sm mb-2">${stars}</div>
+                            <p class="text-gray-700 text-sm whitespace-pre-wrap">${r.comment}</p>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html;
+            }
+
+            function setupReviewForm(productId, user) {
+                const loginPrompt = document.getElementById('loginPrompt');
+                const reviewFormContainer = document.getElementById('reviewFormContainer');
+
+                // Logic check:
+                // 1. If not logged in: Show "Must log in" message, BUT ALSO keep the form visible.
+                // 2. If logged in: Hide "Must log in" message, Show form.
+
+                if (!user) {
+                    loginPrompt.classList.remove('hidden');
+                    loginPrompt.style.display = 'block';
+                    reviewFormContainer.classList.remove('hidden'); // Show form so they can try to click submit
+                } else {
+                    loginPrompt.classList.add('hidden');
+                    loginPrompt.style.display = 'none';
+                    reviewFormContainer.classList.remove('hidden');
+                }
+
+                // Star Selection
+                const stars = document.querySelectorAll('.rating-input span');
+                const ratingInput = document.getElementById('ratingInput');
+
+                stars.forEach(star => {
+                    star.addEventListener('click', () => {
+                        const val = parseInt(star.getAttribute('data-value'));
+                        ratingInput.value = val;
+                        stars.forEach(s => {
+                            const sVal = parseInt(s.getAttribute('data-value'));
+                            if (sVal <= val) {
+                                s.style.color = '#f59e0b'; // Accent/gold color
+                            } else {
+                                s.style.color = '#d1d5db'; // Gray color
+                            }
+                        });
+                    });
+
+                    // Hover effect
+                    star.addEventListener('mouseenter', () => {
+                        const val = parseInt(star.getAttribute('data-value'));
+                        stars.forEach(s => {
+                            const sVal = parseInt(s.getAttribute('data-value'));
+                            if (sVal <= val) {
+                                s.style.color = '#fbbf24'; // Lighter gold on hover
+                            }
+                        });
+                    });
+
+                    star.addEventListener('mouseleave', () => {
+                        const currentRating = parseInt(ratingInput.value) || 0;
+                        stars.forEach(s => {
+                            const sVal = parseInt(s.getAttribute('data-value'));
+                            if (sVal <= currentRating) {
+                                s.style.color = '#f59e0b';
+                            } else {
+                                s.style.color = '#d1d5db';
+                            }
+                        });
+                    });
+                });
+
+                // Submit
+                document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    // Check Auth on Submit
+                    const currentUser = auth.getUser();
+                    if (!currentUser) {
+                        alert('Değerlendirme yapmak için giriş yapmalısınız!');
+                        return;
+                    }
+
+                    const rating = ratingInput.value;
+                    const comment = document.getElementById('commentInput').value;
+
+                    if (!rating) {
+                        alert('Lütfen bir puan seçin');
+                        return;
+                    }
+
+                    try {
+                        const res = await fetch('/api/reviews/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                product: productId,
+                                rating: parseInt(rating),
+                                comment: comment
+                            })
+                        });
+
+                        if (res.ok) {
+                            alert('Değerlendirme başarılı!');
+                            window.location.reload();
+                        } else {
+                            const err = await res.json();
+                            alert('Hata: ' + JSON.stringify(err));
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        alert('Bir hata oluştu.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

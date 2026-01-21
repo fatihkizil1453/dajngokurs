@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siparişlerim - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">MarketPlus</a>
+            <div class="nav-actions">
+                <!-- Dynamically populated by auth.js -->
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4 mb-4 grid-sidebar animate-fade">
+        <!-- Sidebar Menu -->
+        <aside class="sidebar h-fit">
+            <div class="flex items-center gap-2 mb-4 pb-4 border-b">
+                <div class="user-avatar"
+                    style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                    JD</div>
+                <div>
+                    <div class="font-bold user-full-name">John Doe</div>
+                    <div class="text-xs text-muted user-role">Müşteri Hesabı</div>
+                </div>
+            </div>
+            <nav class="flex flex-col gap-1">
+                <a href="profile.html" class="sidebar-link">Profil Ayarları</a>
+                <a href="orders.html" class="sidebar-link active">Siparişlerim</a>
+                <a href="profile.html?section=addresses" class="sidebar-link">Adres Defteri</a>
+                <a href="profile.html?section=payments" class="sidebar-link">Ödeme Yöntemleri</a>
+                <a href="favorites.html" class="sidebar-link">Favorilerim</a>
+                <a href="messages.html" class="sidebar-link">Mesajlar</a>
+                <a href="#" class="sidebar-link text-danger logout-trigger">Çıkış Yap</a>
+            </nav>
+        </aside>
+
+        <!-- Orders List -->
+        <div id="ordersContainer">
+            <!-- Success message (shown if redirected from checkout) -->
+            <div id="successMessage" class="bg-green-100 border border-green-300 rounded p-4 mb-4"
+                style="display:none; background: #d1fae5; border-color: #6ee7b7;">
+                <div class="flex items-center gap-2">
+                    <span style="font-size: 1.5rem;">✅</span>
+                    <div>
+                        <div class="font-bold text-green-800" style="color: #065f46;">Siparişiniz Alındı!</div>
+                        <div class="text-sm" style="color: #047857;">Sipariş numaranız: <span
+                                id="orderIdDisplay"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded shadow-sm border p-6">
+                <h1 class="font-bold text-xl mb-6">Siparişlerim</h1>
+
+                <!-- Orders will be rendered here -->
+                <div id="ordersList">
+                    <p class="text-center text-muted">Yükleniyor...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="noOrders" class="p-12 text-center" style="display:none;">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem; opacity: 0.5;">📦</div>
+                    <h3 class="font-bold text-xl mb-2">Henüz siparişiniz yok</h3>
+                    <p class="text-muted mb-6">MarketPlus'ın avantajlı dünyasını keşfetmeye ne dersiniz?</p>
+                    <a href="products.html" class="btn btn-primary">Alışverişe Başla</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../favorites.js"></script>
+    <script src="../cart.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for success message
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') === 'true') {
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('orderIdDisplay').textContent = '#' + urlParams.get('orderId');
+                window.history.replaceState({}, document.title, 'orders.html');
+            }
+
+            // Update sidebar with user info
+            const user = auth.getUser();
+            if (user) {
+                const fullName = (user.first_name + ' ' + user.last_name).trim() || user.email;
+                const initials = (user.first_name?.[0] || '') + (user.last_name?.[0] || '');
+
+                document.querySelector('.user-full-name').textContent = fullName;
+                document.querySelector('.user-avatar').textContent = initials.toUpperCase() || user.email[0].toUpperCase();
+            } else {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Render orders
+            fetchOrders();
+        });
+
+        async function fetchOrders() {
+            try {
+                const response = await fetch('/api/orders/buyer/');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch orders');
+                }
+                const orders = await response.json();
+                renderOrders(orders);
+            } catch (error) {
+                console.error(error);
+                document.getElementById('ordersList').innerHTML = '<p class="text-center text-muted">Siparişler yüklenirken bir hata oluştu.</p>';
+            }
+        }
+
+        function renderOrders(orders) {
+            const ordersList = document.getElementById('ordersList');
+            const noOrders = document.getElementById('noOrders');
+
+            if (orders.length === 0) {
+                ordersList.style.display = 'none';
+                noOrders.style.display = 'block';
+                return;
+            }
+
+            ordersList.style.display = 'block';
+            noOrders.style.display = 'none';
+
+            let html = '';
+            orders.forEach(order => {
+                const date = new Date(order.created_at).toLocaleDateString('tr-TR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const statusColors = {
+                    'PENDING': { bg: '#fef3c7', color: '#d97706', text: 'Ödeme Bekliyor' },
+                    'PAID': { bg: '#d1fae5', color: '#059669', text: 'Ödendi' },
+                    'PROCESSING': { bg: '#dbeafe', color: '#2563eb', text: 'Hazırlanıyor' },
+                    'SHIPPED': { bg: '#e0e7ff', color: '#4f46e5', text: 'Kargoya Verildi' },
+                    'DELIVERED': { bg: '#d1fae5', color: '#059669', text: 'Teslim Edildi' },
+                    'CANCELLED': { bg: '#fee2e2', color: '#dc2626', text: 'İptal Edildi' }
+                };
+                const statusStyle = statusColors[order.status] || statusColors['PAID'];
+
+                let itemsHtml = '';
+                // Backend returns "items" which is a flattened list of OrderItems
+                // Each item has: product_name, quantity, total_price, image, seller (name)
+                order.items.forEach(item => {
+                    itemsHtml += `
+                        <div class="flex gap-3 mb-2">
+                            <div style="width:60px;height:60px;background:#f9f9f9;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#999;flex-shrink:0;">
+                                ${item.image ? `<img src="${item.image}" style="max-width:100%;max-height:100%;border-radius:4px;">` : 'Görsel'}
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-semibold">${item.product_name}</div>
+                                <div class="text-xs text-muted">${item.seller || 'Satıcı'} • ${item.quantity} adet</div>
+                                <div class="font-bold text-sm">${parseFloat(item.total_price).toLocaleString('tr-TR')} TL</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                const canCancel = !['CANCELLED', 'DELIVERED', 'SHIPPED'].includes(order.status);
+                // Adjust address display based on backend response structure if needed
+                const addr = order.shipping_address;
+                const addrText = addr ? (addr.full || addr.address + ', ' + addr.city) : 'Adres bilgisi yok';
+
+                html += `
+                    <div class="border rounded-lg p-4 mb-4 hover:shadow-md transition">
+                        <div class="flex justify-between items-start mb-4 pb-3 border-b">
+                            <div>
+                                <div class="font-bold text-lg">Sipariş #${order.id}</div>
+                                <div class="text-sm text-muted">${date}</div>
+                            </div>
+                            <div>
+                                <span class="badge" style="background: ${statusStyle.bg}; color: ${statusStyle.color};">${statusStyle.text}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            ${itemsHtml}
+                        </div>
+
+                        <div class="flex justify-between items-center pt-3 border-t">
+                            <div>
+                                <div class="text-sm text-muted mb-1">
+                                    Teslimat: ${addrText}
+                                </div>
+                                ${canCancel ? `<button class="btn btn-sm btn-secondary" style="color:#ef4444;" onclick="cancelOrder(${order.id})">Siparişi İptal Et</button>` : ''}
+                            </div>
+                            <div class="font-bold text-lg text-primary">
+                                ${parseFloat(order.total_amount).toLocaleString('tr-TR')} TL
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            ordersList.innerHTML = html;
+        }
+
+        async function cancelOrder(orderId) {
+            if (!confirm('Bu siparişi iptal etmek istediğinize emin misiniz?')) return;
+
+            try {
+                const response = await fetch(`/api/orders/buyer/${orderId}/cancel/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+
+                if (response.ok) {
+                    // Refresh orders
+                    fetchOrders();
+
+                    // Show Confirmation (Toast or inline)
+                    alert('Sipariş başarıyla iptal edildi.');
+                } else {
+                    const err = await response.json();
+                    alert('İptal başarısız: ' + (err.error || 'Bilinmeyen hata'));
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Bir hata oluştu.');
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hesabım - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .section-content {
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        .card-item,
+        .address-item {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .card-item.default,
+        .address-item.default {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .item-actions {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .card-visual {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">MarketPlus</a>
+            <div class="nav-actions"></div>
+        </div>
+    </nav>
+
+    <main class="container mt-4 mb-4 grid-sidebar">
+        <!-- Sidebar -->
+        <aside class="sidebar bg-white rounded shadow-sm p-4 h-fit">
+            <div class="flex items-center gap-2 mb-4 pb-4 border-b">
+                <div class="user-avatar"
+                    style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                    JD</div>
+                <div>
+                    <div class="font-bold user-full-name">John Doe</div>
+                    <div class="text-xs text-muted user-role">Müşteri Hesabı</div>
+                </div>
+            </div>
+            <nav class="flex flex-col gap-1">
+                <a href="#" class="sidebar-link active" data-section="profile">Profil Ayarları</a>
+                <a href="orders.html" class="sidebar-link">Siparişlerim</a>
+                <a href="#" class="sidebar-link" data-section="addresses">Adres Defteri</a>
+                <a href="#" class="sidebar-link" data-section="payments">Ödeme Yöntemleri</a>
+                <a href="favorites.html" class="sidebar-link">Favorilerim</a>
+                <a href="messages.html" class="sidebar-link">Mesajlar</a>
+                <a href="#" class="sidebar-link text-danger logout-trigger">Çıkış Yap</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="bg-white rounded shadow-sm border p-6">
+
+            <!-- Section: Profile -->
+            <div id="section-profile" class="section-content active">
+                <h1 class="font-bold text-xl mb-6">Profil Ayarları</h1>
+                <form id="profileForm" class="grid-cols-2" style="max-width: 600px;">
+                    <div class="form-group">
+                        <label>Ad</label>
+                        <input type="text" id="profile_first_name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Soyad</label>
+                        <input type="text" id="profile_last_name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>E-posta Adresi</label>
+                        <input type="email" id="profile_email" class="form-control" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon Numarası</label>
+                        <input type="tel" id="profile_phone" class="form-control" value="+90">
+                    </div>
+                    <div class="mt-4" style="grid-column: span 2;">
+                        <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Section: Addresses -->
+            <div id="section-addresses" class="section-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="font-bold text-xl">Adres Defteri</h1>
+                    <button class="btn btn-primary btn-sm" onclick="showAddressForm()">+ Yeni Adres Ekle</button>
+                </div>
+
+                <div id="addressesList"></div>
+
+                <!-- Address Form Modal -->
+                <div id="addressFormContainer" class="bg-gray-50 p-4 rounded border mb-4" style="display:none;">
+                    <h3 class="font-bold mb-4" id="addressFormTitle">Yeni Adres Ekle</h3>
+                    <input type="hidden" id="editAddressId">
+                    <div class="grid-cols-2">
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Adres Başlığı</label>
+                            <input type="text" id="addr_title" class="form-control" placeholder="Ev, İş, vb.">
+                        </div>
+                        <div class="form-group">
+                            <label>Ad Soyad</label>
+                            <input type="text" id="addr_name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefon</label>
+                            <input type="text" id="addr_phone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Şehir</label>
+                            <input type="text" id="addr_city" class="form-control" value="İstanbul">
+                        </div>
+                        <div class="form-group">
+                            <label>İlçe</label>
+                            <input type="text" id="addr_district" class="form-control">
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Açık Adres</label>
+                            <textarea id="addr_full" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Posta Kodu</label>
+                            <input type="text" id="addr_zip" class="form-control">
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button class="btn btn-primary" onclick="saveAddress()">Kaydet</button>
+                        <button class="btn btn-secondary" onclick="hideAddressForm()">İptal</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Payments -->
+            <div id="section-payments" class="section-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="font-bold text-xl">Kayıtlı Kartlarım</h1>
+                    <button class="btn btn-primary btn-sm" onclick="showCardForm()">+ Yeni Kart Ekle</button>
+                </div>
+
+                <div id="cardsList"></div>
+
+                <!-- Card Form -->
+                <div id="cardFormContainer" class="bg-gray-50 p-4 rounded border mb-4" style="display:none;">
+                    <h3 class="font-bold mb-4" id="cardFormTitle">Yeni Kart Ekle</h3>
+                    <input type="hidden" id="editCardId">
+                    <div style="max-width: 400px;">
+                        <div class="form-group">
+                            <label>Kart Üzerindeki İsim</label>
+                            <input type="text" id="card_name" class="form-control" placeholder="AD SOYAD">
+                        </div>
+                        <div class="form-group">
+                            <label>Kart Numarası</label>
+                            <input type="text" id="card_number" class="form-control" placeholder="0000 0000 0000 0000"
+                                maxlength="19">
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="form-group flex-1">
+                                <label>Son Kullanma</label>
+                                <input type="text" id="card_expiry" class="form-control" placeholder="AA/YY"
+                                    maxlength="5">
+                            </div>
+                            <div class="form-group flex-1">
+                                <label>CVV</label>
+                                <input type="password" id="card_cvv" class="form-control" placeholder="***"
+                                    maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button class="btn btn-primary" onclick="saveCard()">Kaydet</button>
+                        <button class="btn btn-secondary" onclick="hideCardForm()">İptal</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="../favorites.js"></script>
+    <script src="../cart.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        // Data Management
+        function getAddresses() {
+            return JSON.parse(localStorage.getItem('addresses') || '[]');
+        }
+        function saveAddresses(addresses) {
+            localStorage.setItem('addresses', JSON.stringify(addresses));
+        }
+        function getCards() {
+            return JSON.parse(localStorage.getItem('cards') || '[]');
+        }
+        function saveCards(cards) {
+            localStorage.setItem('cards', JSON.stringify(cards));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = auth.getUser();
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Update sidebar user info
+            const fullName = (user.first_name + ' ' + user.last_name).trim() || user.email;
+            const initials = (user.first_name?.[0] || '') + (user.last_name?.[0] || '');
+            document.querySelector('.user-full-name').textContent = fullName;
+            document.querySelector('.user-avatar').textContent = initials.toUpperCase() || user.email[0].toUpperCase();
+
+            // Profile form
+            document.getElementById('profile_first_name').value = user.first_name || '';
+            document.getElementById('profile_last_name').value = user.last_name || '';
+            document.getElementById('profile_email').value = user.email || '';
+            document.getElementById('profile_phone').value = user.phone || '+90';
+
+            // Section switching
+            const links = document.querySelectorAll('.sidebar-link[data-section]');
+            const sections = document.querySelectorAll('.section-content');
+
+            function showSection(target) {
+                links.forEach(l => l.classList.toggle('active', l.dataset.section === target));
+                sections.forEach(s => s.classList.toggle('active', s.id === `section-${target}`));
+
+                if (target === 'addresses') renderAddresses();
+                if (target === 'payments') renderCards();
+            }
+
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showSection(link.dataset.section);
+                });
+            });
+
+            // Handle URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialSection = urlParams.get('section');
+            if (initialSection) showSection(initialSection);
+
+            // Profile form submit
+            document.getElementById('profileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const result = await auth.updateProfile({
+                    first_name: document.getElementById('profile_first_name').value,
+                    last_name: document.getElementById('profile_last_name').value,
+                    phone: document.getElementById('profile_phone').value
+                });
+                if (result.success) {
+                    alert('Değişiklikler kaydedildi!');
+                    window.location.reload();
+                }
+            });
+
+            // Initial renders
+            renderAddresses();
+            renderCards();
+        });
+
+        // ADDRESSES
+        function renderAddresses() {
+            const addresses = getAddresses();
+            const container = document.getElementById('addressesList');
+
+            if (addresses.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-8">Henüz kayıtlı adresiniz yok.</p>';
+                return;
+            }
+
+            let html = '';
+            addresses.forEach((addr, index) => {
+                html += `
+                    <div class="address-item ${addr.isDefault ? 'default' : ''}">
+                        <div class="item-actions">
+                            ${addr.isDefault ? '<span class="badge badge-success">Varsayılan</span>' : `<button class="btn btn-sm btn-secondary" onclick="setDefaultAddress(${index})">Varsayılan Yap</button>`}
+                            <button class="btn btn-sm btn-secondary" onclick="editAddress(${index})">Düzenle</button>
+                            <button class="btn btn-sm btn-secondary" style="color:#ef4444;" onclick="deleteAddress(${index})">Sil</button>
+                        </div>
+                        <div class="font-bold mb-1">${addr.title}</div>
+                        <div class="text-sm text-muted">${addr.name} • ${addr.phone}</div>
+                        <div class="text-sm mt-2">${addr.full}</div>
+                        <div class="text-sm text-muted">${addr.district}, ${addr.city} ${addr.zip}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function showAddressForm(addr = null, index = null) {
+            document.getElementById('addressFormContainer').style.display = 'block';
+            document.getElementById('addressFormTitle').textContent = addr ? 'Adresi Düzenle' : 'Yeni Adres Ekle';
+            document.getElementById('editAddressId').value = index !== null ? index : '';
+
+            const user = auth.getUser();
+            document.getElementById('addr_title').value = addr?.title || '';
+            document.getElementById('addr_name').value = addr?.name || (user.first_name + ' ' + user.last_name).trim();
+            document.getElementById('addr_phone').value = addr?.phone || user.phone || '';
+            document.getElementById('addr_city').value = addr?.city || 'İstanbul';
+            document.getElementById('addr_district').value = addr?.district || '';
+            document.getElementById('addr_full').value = addr?.full || '';
+            document.getElementById('addr_zip').value = addr?.zip || '';
+        }
+
+        function hideAddressForm() {
+            document.getElementById('addressFormContainer').style.display = 'none';
+        }
+
+        function saveAddress() {
+            const addresses = getAddresses();
+            const editIndex = document.getElementById('editAddressId').value;
+
+            const addr = {
+                title: document.getElementById('addr_title').value || 'Adresim',
+                name: document.getElementById('addr_name').value,
+                phone: document.getElementById('addr_phone').value,
+                city: document.getElementById('addr_city').value,
+                district: document.getElementById('addr_district').value,
+                full: document.getElementById('addr_full').value,
+                zip: document.getElementById('addr_zip').value,
+                isDefault: addresses.length === 0
+            };
+
+            if (editIndex !== '') {
+                addr.isDefault = addresses[editIndex].isDefault;
+                addresses[editIndex] = addr;
+            } else {
+                addresses.push(addr);
+            }
+
+            saveAddresses(addresses);
+            hideAddressForm();
+            renderAddresses();
+        }
+
+        function editAddress(index) {
+            const addresses = getAddresses();
+            showAddressForm(addresses[index], index);
+        }
+
+        function deleteAddress(index) {
+            if (!confirm('Bu adresi silmek istediğinize emin misiniz?')) return;
+            const addresses = getAddresses();
+            const wasDefault = addresses[index].isDefault;
+            addresses.splice(index, 1);
+            if (wasDefault && addresses.length > 0) addresses[0].isDefault = true;
+            saveAddresses(addresses);
+            renderAddresses();
+        }
+
+        function setDefaultAddress(index) {
+            const addresses = getAddresses();
+            addresses.forEach((a, i) => a.isDefault = (i === index));
+            saveAddresses(addresses);
+            renderAddresses();
+        }
+
+        // CARDS
+        function renderCards() {
+            const cards = getCards();
+            const container = document.getElementById('cardsList');
+
+            if (cards.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-8">Henüz kayıtlı kartınız yok.</p>';
+                return;
+            }
+
+            let html = '';
+            cards.forEach((card, index) => {
+                const maskedNumber = '**** **** **** ' + card.number.slice(-4);
+                html += `
+                    <div class="card-item ${card.isDefault ? 'default' : ''}">
+                        <div class="item-actions">
+                            ${card.isDefault ? '<span class="badge badge-success">Varsayılan</span>' : `<button class="btn btn-sm btn-secondary" onclick="setDefaultCard(${index})">Varsayılan Yap</button>`}
+                            <button class="btn btn-sm btn-secondary" style="color:#ef4444;" onclick="deleteCard(${index})">Sil</button>
+                        </div>
+                        <div class="card-visual" style="max-width:280px;">
+                            <div class="text-xs opacity-80 mb-2">Kredi Kartı</div>
+                            <div class="tracking-widest mb-2">${maskedNumber}</div>
+                            <div class="flex justify-between">
+                                <span>${card.name}</span>
+                                <span>${card.expiry}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function showCardForm() {
+            document.getElementById('cardFormContainer').style.display = 'block';
+            document.getElementById('editCardId').value = '';
+            document.getElementById('card_name').value = '';
+            document.getElementById('card_number').value = '';
+            document.getElementById('card_expiry').value = '';
+            document.getElementById('card_cvv').value = '';
+        }
+
+        function hideCardForm() {
+            document.getElementById('cardFormContainer').style.display = 'none';
+        }
+
+        function saveCard() {
+            const cards = getCards();
+
+            const card = {
+                name: document.getElementById('card_name').value,
+                number: document.getElementById('card_number').value.replace(/\s/g, ''),
+                expiry: document.getElementById('card_expiry').value,
+                isDefault: cards.length === 0
+            };
+
+            if (!card.number || card.number.length < 16) {
+                alert('Geçerli bir kart numarası girin');
+                return;
+            }
+
+            cards.push(card);
+            saveCards(cards);
+            hideCardForm();
+            renderCards();
+        }
+
+        function deleteCard(index) {
+            if (!confirm('Bu kartı silmek istediğinize emin misiniz?')) return;
+            const cards = getCards();
+            const wasDefault = cards[index].isDefault;
+            cards.splice(index, 1);
+            if (wasDefault && cards.length > 0) cards[0].isDefault = true;
+            saveCards(cards);
+            renderCards();
+        }
+
+        function setDefaultCard(index) {
+            const cards = getCards();
+            cards.forEach((c, i) => c.isDefault = (i === index));
+            saveCards(cards);
+            renderCards();
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sipariş #100234 - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">MarketPlus</a>
+            <div class="nav-actions">
+                <!-- Dynamically populated by auth.js -->
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4 mb-4">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="font-bold text-xl">Sipariş Detayı #100234</h1>
+            <a href="orders.html" class="btn btn-secondary btn-sm">Siparişlere Dön</a>
+        </div>
+
+        <div class="grid-cols-4" style="grid-template-columns: 3fr 1fr;">
+
+            <!-- Main Content -->
+            <div class="flex flex-col gap-4">
+
+                <!-- Shipment 1 -->
+                <div class="bg-white rounded shadow-sm border p-4">
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded mb-4">
+                        <div>
+                            <span class="font-bold text-sm">Teslimat 1 / 2</span>
+                            <span class="text-xs text-muted mx-2">|</span>
+                            <span class="text-sm">Satıcı: TechWorld Inc.</span>
+                        </div>
+                        <div class="badge badge-success">Kargolandı - Yolda</div>
+                    </div>
+
+                    <!-- Tracking -->
+                    <div class="mb-4 p-4 border rounded bg-blue-50">
+                        <div class="text-sm font-semibold text-primary mb-1">Takip Numarası: UPS-987654321</div>
+                        <div class="text-xs text-muted">Tahmini Teslimat: 20 Ocak 2026</div>
+
+                        <div class="flex items-center mt-4 text-xs font-semibold relative">
+                            <div class="flex-1 text-center text-primary">Sipariş Alındı</div>
+                            <div class="flex-1 text-center text-primary">Kargolandı</div>
+                            <div class="flex-1 text-center text-muted">Dağıtımda</div>
+                            <div class="flex-1 text-center text-muted">Teslim Edildi</div>
+                        </div>
+                        <div class="h-1 bg-gray-200 mt-2 relative rounded overflow-hidden">
+                            <div class="bg-primary h-full" style="width: 50%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Items -->
+                    <div class="flex gap-4 mb-4 border-b pb-4">
+                        <div style="width: 60px; height: 60px; background: #eee; border-radius: 4px;"></div>
+                        <div class="flex-1">
+                            <div class="font-semibold text-sm">Laptop Pro X</div>
+                            <div class="text-xs text-muted">Varyant: Gümüş | Adet: 1</div>
+                            <div class="font-bold mt-1">36,000.00 TL</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm h-fit">Sorun Bildir</button>
+                    </div>
+                    <div class="flex gap-4">
+                        <div style="width: 60px; height: 60px; background: #eee; border-radius: 4px;"></div>
+                        <div class="flex-1">
+                            <div class="font-semibold text-sm">USB-C Hub</div>
+                            <div class="text-xs text-muted">Varyant: Standart | Adet: 1</div>
+                            <div class="font-bold mt-1">870.00 TL</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm h-fit">Sorun Bildir</button>
+                    </div>
+
+                    <div class="mt-4 text-right">
+                        <button class="btn btn-secondary btn-sm">Satıcıya Mesaj At</button>
+                    </div>
+                </div>
+
+                <!-- Shipment 2 -->
+                <div class="bg-white rounded shadow-sm border p-4">
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded mb-4">
+                        <div>
+                            <span class="font-bold text-sm">Teslimat 2 / 2</span>
+                            <span class="text-xs text-muted mx-2">|</span>
+                            <span class="text-sm">Satıcı: FashionHub</span>
+                        </div>
+                        <div class="badge badge-pending">Hazırlanıyor</div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div style="width: 60px; height: 60px; background: #eee; border-radius: 4px;"></div>
+                        <div class="flex-1">
+                            <div class="font-semibold text-sm">Koşu Ayakkabısı</div>
+                            <div class="text-xs text-muted">Numara: 42 | Adet: 1</div>
+                            <div class="font-bold mt-1">2,250.00 TL</div>
+                        </div>
+                        <button class="btn btn-secondary btn-sm h-fit" disabled>Ürünü İptal Et</button>
+
+                    </div>
+                    <div class="mt-4 text-right">
+                        <button class="btn btn-secondary btn-sm">Satıcıya Mesaj At</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="flex flex-col gap-4">
+                <div class="bg-white rounded shadow-sm border p-4">
+                    <h3 class="font-bold text-sm mb-2">Teslimat Adresi</h3>
+                    <div class="text-sm text-muted">
+                        <span class="font-semibold">Müşteri Bilgisi</span><br>
+                        Atatürk Mah, Cumhuriyet Cad<br>
+                        Kadıköy, İstanbul 34000
+                    </div>
+                </div>
+
+                <div class="bg-white rounded shadow-sm border p-4">
+                    <h3 class="font-bold text-sm mb-2">Ödeme Bilgileri</h3>
+                    <div class="text-sm text-muted">
+                        Visa ile ödendi (Son 4 hane: 4242)<br>
+                        Toplam: <strong>39,120.00 TL</strong>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    <script src="../auth.js"></script>
+</body>
+
+</html>

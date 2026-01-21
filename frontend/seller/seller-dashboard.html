@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satıcı Paneli - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="flex items-center gap-4">
+                <a href="../buyer/index.html" class="logo">MarketPlus</a>
+                <span class="badge badge-pending">Satıcı Paneli</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-semibold store-name">TechWorld Inc.</span>
+                <div class="store-initials"
+                    style="width: 32px; height: 32px; background: var(--secondary); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">
+                    TW</div>
+                <button id="logoutBtn" class="btn btn-secondary btn-sm">Çıkış Yap</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container flex" style="align-items: flex-start;">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 flex-shrink-0">
+            <nav class="flex flex-col gap-1">
+                <a href="seller-products.html" class="sidebar-link">Ürünler</a>
+                <a href="seller-orders.html" class="sidebar-link">Siparişler <span class="badge badge-danger ml-auto"
+                        id="orderBadge">0</span></a>
+                <a href="seller-messages.html" class="sidebar-link">Mesajlar</a>
+                <a href="seller-dashboard.html" class="sidebar-link active">Analitik</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <h1 class="font-bold text-2xl mb-6">Genel Bakış</h1>
+
+            <!-- Stats Cards -->
+            <div class="grid-cols-4 mb-6">
+                <div class="bg-white p-4 rounded shadow-sm border">
+                    <div class="text-sm text-muted mb-1">Toplam Gelir</div>
+                    <div class="font-bold text-xl">12,450.00 TL</div>
+                    <div class="text-success text-xs mt-1">↑ Geçen aya göre %12</div>
+                </div>
+                <div class="bg-white p-4 rounded shadow-sm border">
+                    <div class="text-sm text-muted mb-1">Siparişler</div>
+                    <div class="font-bold text-xl">45</div>
+                    <div class="text-success text-xs mt-1">↑ 5 bugün yeni</div>
+                </div>
+                <div class="bg-white p-4 rounded shadow-sm border">
+                    <div class="text-sm text-muted mb-1">Ürünler</div>
+                    <div class="font-bold text-xl">12</div>
+                    <div class="text-muted text-xs mt-1">Aktif İlan</div>
+                </div>
+                <div class="bg-white p-4 rounded shadow-sm border">
+                    <div class="text-sm text-muted mb-1">Puan</div>
+                    <div class="font-bold text-xl">4.8</div>
+                    <div class="text-muted text-xs mt-1">★★★★★</div>
+                </div>
+            </div>
+
+            <div class="grid-cols-2">
+                <!-- Recent Orders -->
+                <div class="bg-white rounded shadow-sm border p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold">Son Siparişler</h3>
+                        <a href="seller-orders.html" class="text-primary text-sm">Tümünü Gör</a>
+                    </div>
+                    <table class="w-full text-sm text-left">
+                        <thead>
+                            <tr class="bg-gray-50 border-b">
+                                <th class="p-2">Sipariş ID</th>
+                                <th class="p-2">Ürünler</th>
+                                <th class="p-2">Toplam</th>
+                                <th class="p-2">Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="p-2">#100234</td>
+                                <td class="p-2">Laptop Pro X...</td>
+                                <td class="p-2">36,870.00 TL</td>
+                                <td class="p-2"><span class="badge badge-success">Kargolandı</span></td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="p-2">#100235</td>
+                                <td class="p-2">USB-C Hub</td>
+                                <td class="p-2">870.00 TL</td>
+                                <td class="p-2"><span class="badge badge-pending">Hazırlanıyor</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-2">#100236</td>
+                                <td class="p-2">Monitör 4K</td>
+                                <td class="p-2">10,500.00 TL</td>
+                                <td class="p-2"><span class="badge badge-pending">Hazırlanıyor</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Action Items -->
+                <div class="bg-white rounded shadow-sm border p-4">
+                    <h3 class="font-bold mb-4">Aksiyon Gerektirenler</h3>
+                    <div class="flex flex-col gap-3">
+                        <div class="p-3 bg-red-50 border border-red-100 rounded flex justify-between items-center">
+                            <span class="text-sm text-danger font-medium">3 Sipariş bugün kargolanmalı</span>
+                            <button class="btn btn-sm btn-secondary">Gör</button>
+                        </div>
+                        <div
+                            class="p-3 bg-yellow-50 border border-yellow-100 rounded flex justify-between items-center">
+                            <span class="text-sm text-accent font-medium">2 Okunmamış alıcı mesajı</span>
+                            <button class="btn btn-sm btn-secondary">Yanıtla</button>
+                        </div>
+                        <div class="p-3 bg-gray-50 border border-gray-100 rounded flex justify-between items-center">
+                            <span class="text-sm text-muted font-medium">Stok Az: Laptop Pro X (2 kaldı)</span>
+                            <button class="btn btn-sm btn-secondary">Stok Ekle</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script src="../auth.js"></script>
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+
+        async function loadDashboardData() {
+            const user = auth.getUser();
+            if (!user || user.role !== 'SELLER') {
+                window.location.href = '../buyer/login.html';
+                return;
+            }
+
+            document.querySelector('.store-name').textContent = user.seller_profile?.business_name || user.first_name;
+            document.querySelector('.store-initials').textContent = (user.seller_profile?.business_name || user.first_name).substring(0, 2).toUpperCase();
+
+            try {
+                // Fetch seller orders
+                const response = await fetch(`${API_BASE}/orders/seller/`, {
+                    headers: {
+                        'Authorization': `Bearer ${user.access}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch orders');
+
+                const orders = await response.json();
+
+                // Calculate statistics
+                const totalOrders = orders.length;
+                const waitingOrders = orders.filter(o => o.status === 'WAITING').length;
+                const totalRevenue = orders.reduce((sum, o) => sum + parseFloat(o.total_amount), 0);
+
+                // Update stats cards
+                document.querySelector('.grid-cols-4').innerHTML = `
+                    <div class="bg-white p-4 rounded shadow-sm border">
+                        <div class="text-sm text-muted mb-1">Toplam Gelir</div>
+                        <div class="font-bold text-xl">${totalRevenue.toFixed(2)} TL</div>
+                        <div class="text-muted text-xs mt-1">Tüm siparişler</div>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-sm border">
+                        <div class="text-sm text-muted mb-1">Siparişler</div>
+                        <div class="font-bold text-xl">${totalOrders}</div>
+                        <div class="text-success text-xs mt-1">${waitingOrders} bekliyor</div>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-sm border">
+                        <div class="text-sm text-muted mb-1">Ürünler</div>
+                        <div class="font-bold text-xl" id="productCount">-</div>
+                        <div class="text-muted text-xs mt-1">Aktif İlan</div>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-sm border">
+                        <div class="text-sm text-muted mb-1">Puan</div>
+                        <div class="font-bold text-xl">4.8</div>
+                        <div class="text-muted text-xs mt-1">★★★★★</div>
+                    </div>
+                `;
+
+                // Update order badge
+                document.getElementById('orderBadge').textContent = waitingOrders;
+
+                // Display recent orders
+                const recentOrders = orders.slice(0, 3);
+                const orderTableBody = document.querySelector('tbody');
+                orderTableBody.innerHTML = recentOrders.map(order => {
+                    const statusMap = {
+                        'WAITING': { text: 'Onay Bekliyor', class: 'badge-pending' },
+                        'PROCESSING': { text: 'Hazırlanıyor', class: 'badge-pending' },
+                        'SHIPPED': { text: 'Kargolandı', class: 'badge-success' },
+                        'DELIVERED': { text: 'Teslim Edildi', class: 'badge-success' },
+                        'CANCELLED': { text: 'İptal', class: 'badge-danger' }
+                    };
+                    const status = statusMap[order.status] || { text: order.status, class: 'badge-pending' };
+                    const items = order.items.map(i => i.variant_name).join(', ');
+                    const itemsShort = items.length > 20 ? items.substring(0, 20) + '...' : items;
+
+                    return `
+                        <tr class="border-b">
+                            <td class="p-2">#${order.id}</td>
+                            <td class="p-2">${itemsShort}</td>
+                            <td class="p-2">${parseFloat(order.total_amount).toFixed(2)} TL</td>
+                            <td class="p-2"><span class="badge ${status.class}">${status.text}</span></td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // Update action items
+                const actionDiv = document.querySelector('.flex.flex-col.gap-3');
+                actionDiv.innerHTML = `
+                    <div class="p-3 bg-red-50 border border-red-100 rounded flex justify-between items-center">
+                        <span class="text-sm text-danger font-medium">${waitingOrders} Sipariş onay bekliyor</span>
+                        <a href="seller-orders.html" class="btn btn-sm btn-secondary">Gör</a>
+                    </div>
+                `;
+
+                // Fetch product count
+                const productsResponse = await fetch(`${API_BASE}/products/seller/`, {
+                    headers: { 'Authorization': `Bearer ${user.access}` }
+                });
+                if (productsResponse.ok) {
+                    const products = await productsResponse.json();
+                    document.getElementById('productCount').textContent = products.length;
+                }
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboardData();
+
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                auth.logout();
+            });
+        });
+    </script>
+</body>
+
+</html>

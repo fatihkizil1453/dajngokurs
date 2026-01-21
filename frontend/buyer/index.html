@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Vendor E-Commerce</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body data-page="home">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">MarketPlus</a>
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Ürün, marka ve kategori ara...">
+                <button class="search-btn">Ara</button>
+            </div>
+            <div class="nav-actions">
+                <!-- Dynamically populated by auth.js -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-4 mb-4 animate-fade">
+        <!-- Hero Section -->
+        <div class="rounded-lg mb-6 overflow-hidden shadow-lg"
+            style="height: 350px; display: flex; align-items: center; justify-content: center; background: var(--primary-gradient); color: white; border-radius: var(--radius-lg);">
+            <div class="text-center p-6">
+                <h1 style="font-size: 3.5rem; line-height: 1; margin-bottom: 1.5rem; letter-spacing: -1px;">Kış İndirimi
+                    Başladı</h1>
+                <p
+                    style="font-size: 1.25rem; margin-bottom: 2.5rem; opacity: 0.9; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    Elektronik ve Moda ürünlerinde %50'ye varan benzersiz fırsatları kaçırmayın.
+                </p>
+                <a href="products.html" class="btn btn-accent shadow-lg"
+                    style="padding: 1rem 2.5rem; font-size: 1.1rem;">Alışverişe Başla</a>
+            </div>
+        </div>
+
+        <!-- Featured Categories -->
+        <h2 class="font-bold text-main mb-6" style="font-size: 1.75rem;">Kategoriler</h2>
+        <div id="categoryGrid" class="grid-cols-4 mb-4">
+            <!-- Categories will be loaded here -->
+            <p class="col-span-4 text-center text-muted">Kategoriler yükleniyor...</p>
+        </div>
+
+        <div id="noProducts" class="text-center py-8 bg-white rounded border shadow-sm" style="display:none;">
+            <p class="text-muted">Henüz hiç ürün eklenmemiş.</p>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t mt-4 pt-4 pb-4">
+        <div class="container text-center text-muted text-sm">
+            &copy; 2026 MarketPlus. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="../productService.js"></script>
+    <script src="../favorites.js"></script>
+    <script src="../cart.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const noProducts = document.getElementById('noProducts');
+
+            // 1. Fetch Categories
+            try {
+                const catRes = await fetch('http://127.0.0.1:8000/api/products/categories/');
+                if (catRes.ok) {
+                    const categories = await catRes.json();
+                    renderCategories(categories);
+                }
+            } catch (e) {
+                console.error('Failed to load categories', e);
+            }
+
+            // 2. Fetch Products
+            try {
+                const res = await fetch('http://127.0.0.1:8000/api/products/');
+                if (res.ok) {
+                    const products = await res.json();
+                    if (products.length === 0) {
+                        noProducts.style.display = 'block';
+                    } else {
+                        renderNewArrivals(products.slice(0, 4)); // Show first 4
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            }
+
+            // Render cart count
+            auth.updateNavbar();
+        });
+
+        function renderCategories(categories) {
+            const grid = document.getElementById('categoryGrid');
+            if (categories.length === 0) {
+                grid.innerHTML = '<p class="col-span-4 text-center text-muted">Kategori bulunamadı.</p>';
+                return;
+            }
+
+            let html = '';
+            categories.forEach(cat => {
+                let iconContent;
+                if (cat.image) {
+                    iconContent = `<img src="${cat.image}" alt="${cat.name}" style="width:48px;height:48px;object-fit:contain;margin:0 auto 0.75rem auto;" class="transition group-hover:scale-110">`;
+                } else {
+                    iconContent = `<div class="mb-3 text-3xl group-hover:scale-110 transition">${cat.icon || '📦'}</div>`;
+                }
+
+                html += `
+                    <a href="products.html?category=${cat.slug}"
+                        class="bg-white p-6 rounded shadow-sm text-center hover:shadow-md border cursor-pointer block group">
+                        ${iconContent}
+                        <h3 class="group-hover:text-primary font-medium">${cat.name}</h3>
+                    </a>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+
+        function renderNewArrivals(products) {
+            const main = document.querySelector('main');
+
+            const section = document.createElement('section');
+            section.className = "mb-8";
+            section.innerHTML = '<h2 class="font-bold text-main mb-6" style="font-size: 1.75rem;">Yeni Gelenler</h2>';
+
+            const grid = document.createElement('div');
+            grid.className = "grid-cols-4";
+
+            products.forEach(p => {
+                const rating = parseFloat(p.average_rating) || 0;
+                const reviews = p.review_count || 0;
+                const priceDisplay = p.price_range || p.price;
+                const isFav = favorites.isInFavorites(p.id);
+                const stockQty = p.stock_quantity || 0;
+                const isOutOfStock = stockQty <= 0;
+
+                const card = document.createElement('div');
+                card.className = "product-card bg-white rounded shadow-sm hover:shadow-md transition";
+                card.innerHTML = `
+                    <a href="product-detail.html?id=${p.id}">
+                        <div class="product-img" style="height:200px; background:#f9f9f9; display:flex; align-items:center; justify-content:center; position:relative;">
+                             ${p.image ? `<img src="${p.image}" style="max-height:100%">` : '<span class="text-muted text-xs">Görsel Yok</span>'}
+                             ${isOutOfStock ? '<div style="position:absolute; top:10px; right:10px; background:#dc2626; color:white; padding:4px 12px; border-radius:6px; font-size:11px; font-weight:700;">STOKTA YOK</div>' : ''}
+                        </div>
+                    </a>
+                    <div class="product-body p-4">
+                        <h3 class="font-semibold text-main truncate text-lg">${p.name}</h3>
+                        <div class="text-xs text-muted mb-1">${p.seller_name || 'Satıcı'}</div>
+                        <div class="product-rating text-accent text-sm mb-2">${'★'.repeat(Math.round(rating))}${'☆'.repeat(5 - Math.round(rating))} <span class="text-muted text-xs">(${reviews})</span></div>
+                        <div class="product-price font-bold text-xl text-primary mb-3">${priceDisplay} TL</div>
+                        ${!isOutOfStock ? `<div class="text-xs text-success mb-2" style="font-weight:600;">✓ Stokta ${stockQty} adet</div>` : '<div class="text-xs text-danger mb-2" style="font-weight:600;">⚠ Stokta yok</div>'}
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn btn-primary btn-sm" style="flex:1;" ${isOutOfStock ? 'disabled' : ''} onclick="addToCart(event, ${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price}, '${(p.seller_name || '').replace(/'/g, "\\'")}', '${p.image || ''}', ${stockQty})">
+                                ${isOutOfStock ? 'Stokta Yok' : 'Sepete Ekle'}
+                            </button>
+                            <button class="btn btn-secondary btn-sm fav-btn" data-id="${p.id}" data-name="${p.name.replace(/"/g, '&quot;')}" data-price="${p.price}" data-seller="${(p.seller_name || '').replace(/"/g, '&quot;')}" data-image="${p.image || ''}" style="${isFav ? 'background:#fee2e2;color:#ef4444;' : ''}" onclick="toggleFavorite(event, this)">♥</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            section.appendChild(grid);
+            main.appendChild(section);
+        }
+
+        window.addToCart = function (e, id, name, price, seller, image, stockQty) {
+            e.preventDefault();
+            cart.addItem({
+                id: id,
+                name: name,
+                price: price,
+                seller: seller,
+                image: image,
+                quantity: 1,
+                stock_quantity: stockQty
+            });
+        };
+
+        window.toggleFavorite = function (e, btn) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const product = {
+                id: btn.dataset.id,
+                name: btn.dataset.name,
+                price: parseFloat(btn.dataset.price),
+                seller: btn.dataset.seller,
+                image: btn.dataset.image
+            };
+
+            const result = favorites.toggle(product);
+            favorites.showToast(result.message, result.added);
+
+            if (result.added) {
+                btn.style.background = '#fee2e2';
+                btn.style.color = '#ef4444';
+            } else {
+                btn.style.background = '';
+                btn.style.color = '';
+            }
+        };
+    </script>
+</body>
+
+</html>

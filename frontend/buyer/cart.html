@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sepet - MarketPlus</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">MarketPlus</a>
+            <div class="nav-actions">
+                <!-- Dynamically populated by auth.js -->
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4 mb-4" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+
+        <!-- Cart Items -->
+        <div id="cartItemsContainer" class="flex flex-col gap-4">
+            <h1 class="font-bold text-xl">Sepetim</h1>
+
+            <!-- Items will be injected here by cart.js -->
+            <div class="text-center py-8 bg-white rounded border shadow-sm">
+                <p class="text-muted">Sepetiniz yükleniyor...</p>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div id="cartSummaryContainer" class="bg-white rounded shadow-sm border p-4 h-fit sticky top-4">
+            <h2 class="font-bold text-lg mb-4">Sipariş Özeti</h2>
+            <div class="text-center py-4">
+                <p class="text-muted text-sm">Yükleniyor...</p>
+            </div>
+        </div>
+
+    </main>
+    <script src="../cart.js"></script>
+    <script src="../auth.js"></script>
+</body>
+
+</html>
